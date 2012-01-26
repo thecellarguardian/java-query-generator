@@ -2,7 +2,10 @@ package paql.test;
 import java.io.*;
 import java.util.*;
 import paql.src.PAQLCompilationStep.PAQLScanner.PAQLScanner;
+import paql.src.PAQLCompilationStep.PAQLTokenizer.PAQLTokenizer;
+import paql.src.PAQLCompilationStep.Utilities.PAQLTokenClass.PAQLTokenClass;
 import paql.lib.CompilationStep.Utilities.Word.Word;
+import paql.lib.CompilationStep.Utilities.Token.Token;
 
 public class Test
 {
@@ -20,10 +23,11 @@ public class Test
             return;
         }
         PAQLScanner scanner = new PAQLScanner();
-        List< Word<Integer> > l = scanner.transform(file);
-        for(Word<Integer> word : l)
+        PAQLTokenizer tokenizer = new PAQLTokenizer();
+        List< Token<PAQLTokenClass> > l = tokenizer.transform(scanner.transform(file));
+        for(Token<PAQLTokenClass> token : l)
         {
-            System.out.println(word);
+            System.out.println(token);
         }
     }
 }

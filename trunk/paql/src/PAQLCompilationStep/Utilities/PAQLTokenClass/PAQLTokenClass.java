@@ -1,5 +1,5 @@
 /**
- * @file Token.java
+ * @file PAQLTokenClass.java
  * @author Cosimo Sacco <cosimosacco@gmail.com>
  *
  * @section LICENSE
@@ -18,18 +18,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **/
 
-package paql.lib.CompilationStep.Utilities.Token;
+package paql.src.PAQLCompilationStep.Utilities.PAQLTokenClass;
 
-public class Token<TokenClass>
+public enum PAQLTokenClass
 {
-    private TokenClass tokenType;
-    private String stringRepresentation;
-    public Token(TokenClass tokenTypeToSet, String stringRepresentationToSet)
-    {
-        tokenType = tokenTypeToSet;
-        stringRepresentation = stringRepresentationToSet;
-    }
-    public TokenClass getToken(){return tokenType;}
-    public String getStringRepresentation(){return stringRepresentation;}
-    public String toString(){return tokenType + ": " + stringRepresentation + "\n";}
+    NUMERIC_CONSTANT,
+    CHAR_CONSTANT,
+    STRING_CONSTANT,
+    IDENTIFIER,
+    ELEMENT_KEYWORD,
+    CONTAINER_KEYWORD,
+    QUERY_KEYWORD,
+    KEY_KEYWORD,
+    SEMICOLON,
+    LEFT_PARENTHESIS,
+    RIGHT_PARENTHESIS,
+    LEFT_CURLY_BRACKET,
+    RIGHT_CURLY_BRACKET,
+    LEFT_ANGULAR_BRACKET,
+    RIGHT_ANGULAR_BRACKET
 }

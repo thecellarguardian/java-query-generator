@@ -19,8 +19,10 @@
  **/
 
 package paql.lib.CompilationStep.Tokenizer;
-import  paql.lib.System.System;
-package paql.lib.CompilationStep.Utilities.Word.Word;
+import java.util.*;
+import paql.lib.System.System;
+import paql.lib.CompilationStep.Utilities.Word.Word;
+import paql.lib.CompilationStep.Utilities.Token.Token;
 
-interface Tokenizer<WordType, TokenClass>
+public interface Tokenizer<WordType, TokenClass>
 extends System< List< Word<WordType> >, List< Token<TokenClass> > >{}

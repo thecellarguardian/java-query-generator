@@ -1,5 +1,5 @@
 /**
- * @file Tokenizer.java
+ * @file PAQLTokenizer.java
  * @author Cosimo Sacco <cosimosacco@gmail.com>
  *
  * @section LICENSE
@@ -19,5 +19,144 @@
  **/
 
 package paql.src.PAQLCompilationStep.PAQLTokenizer;
+import java.util.*;
+import java.io.StreamTokenizer;
+import paql.lib.CompilationStep.Tokenizer.Tokenizer;
+import paql.lib.CompilationStep.Utilities.Word.Word;
+import paql.lib.CompilationStep.Utilities.Token.Token;
+import paql.src.PAQLCompilationStep.Utilities.PAQLTokenClass.PAQLTokenClass;
 
-//interface Tokenizer extends System< List<String>, List<Token> >{}
+public class PAQLTokenizer implements Tokenizer<Integer, PAQLTokenClass>
+{
+    public List< Token<PAQLTokenClass> > transform(List< Word<Integer> > words)
+    {
+        List< Token<PAQLTokenClass> > tokenList =
+            new LinkedList< Token<PAQLTokenClass> >();
+        for(Word<Integer> word : words)
+        {
+            switch((word.getWordType()).intValue())
+            {
+                case StreamTokenizer.TT_NUMBER:
+                    tokenList.add
+                    (
+                        new Token<PAQLTokenClass>
+                        (
+                            PAQLTokenClass.NUMERIC_CONSTANT,
+                            word.getWord()
+                        )
+                    );
+                    break;
+                case '\'':
+                    tokenList.add
+                    (
+                        new Token<PAQLTokenClass>
+                        (
+                            PAQLTokenClass.CHAR_CONSTANT,
+                            word.getWord()
+                        )
+                    );
+                    break;
+                case '"':
+                    tokenList.add
+                    (
+                        new Token<PAQLTokenClass>
+                        (
+                            PAQLTokenClass.STRING_CONSTANT,
+                            word.getWord()
+                        )
+                    );
+                    break;
+                case StreamTokenizer.TT_WORD:
+                    {
+                        String stringRepresentation = word.getWord();
+                        PAQLTokenClass tokenType;
+                        if(stringRepresentation.compareTo("element") == 0) tokenType = PAQLTokenClass.ELEMENT_KEYWORD;
+                        else if(stringRepresentation.compareTo("container") == 0) tokenType = PAQLTokenClass.CONTAINER_KEYWORD;
+                        else if(stringRepresentation.compareTo("query") == 0) tokenType = PAQLTokenClass.QUERY_KEYWORD;
+                        else if(stringRepresentation.compareTo("key") == 0) tokenType = PAQLTokenClass.KEY_KEYWORD;
+                        else tokenType = PAQLTokenClass.IDENTIFIER;
+                        tokenList.add
+                        (
+                            new Token<PAQLTokenClass>
+                            (
+                                tokenType,
+                                word.getWord()
+                            )
+                        );
+                    }
+                    break;
+                case 123:
+                    tokenList.add
+                        (
+                            new Token<PAQLTokenClass>
+                            (
+                                PAQLTokenClass.LEFT_CURLY_BRACKET,
+                                word.getWord()
+                            )
+                        );
+                    break;
+                case 125:
+                    tokenList.add
+                        (
+                            new Token<PAQLTokenClass>
+                            (
+                                PAQLTokenClass.RIGHT_CURLY_BRACKET,
+                                word.getWord()
+                            )
+                        );
+                    break;
+                case 40:
+                    tokenList.add
+                        (
+                            new Token<PAQLTokenClass>
+                            (
+                                PAQLTokenClass.LEFT_PARENTHESIS,
+                                word.getWord()
+                            )
+                        );
+                    break;
+                case 41:
+                    tokenList.add
+                        (
+                            new Token<PAQLTokenClass>
+                            (
+                                PAQLTokenClass.RIGHT_PARENTHESIS,
+                                word.getWord()
+                            )
+                        );
+                    break;
+                case 60:
+                    tokenList.add
+                        (
+                            new Token<PAQLTokenClass>
+                            (
+                                PAQLTokenClass.LEFT_ANGULAR_BRACKET,
+                                word.getWord()
+                            )
+                        );
+                    break;
+                case 62:
+                    tokenList.add
+                        (
+                            new Token<PAQLTokenClass>
+                            (
+                                PAQLTokenClass.RIGHT_ANGULAR_BRACKET,
+                                word.getWord()
+                            )
+                        );
+                    break;
+                case 59:
+                    tokenList.add
+                        (
+                            new Token<PAQLTokenClass>
+                            (
+                                PAQLTokenClass.SEMICOLON,
+                                word.getWord()
+                            )
+                        );
+                    break;
+            }
+        }
+        return tokenList;
+    }
+}

@@ -39,22 +39,13 @@ public class PAQLScanner implements Scanner<Integer>
         streamTokenizer.ordinaryChars(59, 62);
         streamTokenizer.ordinaryChars(123, 125);
         streamTokenizer.quoteChar('"');
-        int token = 0;
-        try
-        {
-            token = streamTokenizer.nextToken();
-        }
-        catch(IOException exception)
-        {
-            System.out.println("exception: " + exception.getMessage());
-            exception.printStackTrace();
-            return null;
-        }
-        while (token != StreamTokenizer.TT_EOF)
+        streamTokenizer.quoteChar('\'');
+        int wordType = StreamTokenizer.TT_EOF + 1;
+        while (wordType != StreamTokenizer.TT_EOF)
         {
             try
             {
-                token = streamTokenizer.nextToken();
+                wordType = streamTokenizer.nextToken();
             }
             catch(IOException exception)
             {
@@ -62,7 +53,7 @@ public class PAQLScanner implements Scanner<Integer>
                 exception.printStackTrace();
                 return null;
             }
-            switch(token)
+            switch(wordType)
             {
                 case StreamTokenizer.TT_NUMBER:
                     wordList.add(new Word<Integer>(Double.toString(streamTokenizer.nval), StreamTokenizer.TT_NUMBER));

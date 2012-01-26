@@ -1,6 +1,9 @@
-a b c 
- 
-  
-  {}
-  de d
-  "prova stringa"
+element Book
+{
+	key ISBN;
+	int price;
+}
+
+container<Book> Shelf;
+
+query<Book> Query<Shelf>;
