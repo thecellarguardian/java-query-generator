@@ -1,0 +1,9 @@
+DESCRIPTION -> CONSTRUCT DESCRIPTION | .
+CONSTRUCT -> ELEMENT | CONTAINER | QUERY.
+ELEMENT -> element elemid lcbrace DECBLOCK rcbrace.
+DECBLOCK -> DECLARATION DECBLOCK | .
+DECLARATION -> KEY | VARIABLE.
+KEY -> key VARIABLE.
+VARIABLE -> typeid varid semicolon.
+CONTAINER -> container labrace elemid rabrace contid semicolon.
+QUERY -> query labrace elemid rabrace queryid lpar contid rpar semicolon.
