@@ -32,7 +32,7 @@ import java.util.*;
 public class PAQLSyntacticAnalyzer
 implements SyntacticAnalyzer<PAQLTokenClass>
 {
-    private ParseTree parseDescription throws ParsingException
+    private ParseTree parseDescription
     (
         Iterator< Token<PAQLTokenClass> > tokenIterator
     )
@@ -40,7 +40,7 @@ implements SyntacticAnalyzer<PAQLTokenClass>
         Description description = new Description();
         while(tokenIterator.hasNext())
         {
-            description.addConstructs(parseConstruct(tokenIterator));
+            description.add(parseConstruct(tokenIterator));
         }
         return description;
     }
@@ -50,17 +50,17 @@ implements SyntacticAnalyzer<PAQLTokenClass>
     )
     {
         ParseTree construct;
-        if(expect(new Token<PAQLTokenClass>(PAQLTokenClass.ELEMENT_KEYWORD), tokenIterator))
+        if(expect(PAQLTokenClass.ELEMENT_KEYWORD, tokenIterator))
         {
             construct = parseElement(tokenIterator);
         }
-        else if(expect(new Token<PAQLTokenClass>(PAQLTokenClass.CONTAINER_KEYWORD), tokenIterator))
+        else if(expect(PAQLTokenClass.CONTAINER_KEYWORD, tokenIterator))
         {
             construct = parseContainer(tokenIterator);
         }
-        else if(expect(new Token<PAQLTokenClass>(PAQLTokenClass.QUERY_KEYWORD), tokenIterator))
+        else if(expect(PAQLTokenClass.QUERY_KEYWORD, tokenIterator))
         {
-            construct = parseQUERY(tokenIterator);
+            construct = parseQuery(tokenIterator);
         }
         return construct;
     }
@@ -71,11 +71,267 @@ implements SyntacticAnalyzer<PAQLTokenClass>
     {
         ParseTree element = new Element();
         tokenIterator.next();
-        if(expect(new Token<PAQLTokenClass>(PAQLTokenClass.IDENTIFIER), tokenIterator))
+        if(expect(PAQLTokenClass.IDENTIFIER, tokenIterator))
         {
             element.setIdentifier(tokenIterator);
+            tokenIterator.next();
         }
-        else ...
+        else
+        {
+            throw new RuntimeException
+            (
+                "Syntactic error:"
+                +
+                "\n\tline:"
+                +
+                streamTokenizer.lineno()
+                +
+                "\n\terror: identifier expected"
+            );
+        }
+        element.add(parseDeclarationBlock(tokenIterator));
+        return element;
+    }
+    private ParseTree parseDeclarationBlock
+    (
+        Iterator< Token<PAQLTokenClass> > tokenIterator
+    )
+    {
+        DeclarationBlock declarationBlock = new DeclarationBlock();
+        if(!expect(PAQLTokenClass.LEFT_CURLY_BRACKET, tokenIterator))
+        {
+            throw new RuntimeException
+            (
+                "Syntactic error:"
+                +
+                "\n\tline:"
+                +
+                streamTokenizer.lineno()
+                +
+                "\n\terror: '{' expected"
+            );
+        }
+        tokenIterator.next();
+        while
+        (
+            tokenIterator.hasNext()
+            &&
+            (!expect(PAQLTokenClass.RIGHT_CURLY_BRACKET, tokenIterator))
+        )
+        {
+            declarationBlock.add(parseDeclaration(tokenIterator));
+        }
+        if(!expect(PAQLTokenClass.RIGHT_CURLY_BRACKET, tokenIterator))
+        {
+            throw new RuntimeException
+            (
+                "Syntactic error:"
+                +
+                "\n\tline:"
+                +
+                streamTokenizer.lineno()
+                +
+                "\n\terror: '}' expected"
+            );
+        }
+        return declarationBlock;
+    }
+    private ParseTree parseDeclaration
+    (
+        Iterator< Token<PAQLTokenClass> > tokenIterator
+    )
+    {
+        ParseTree declaration;
+        if(expect(PAQLTokenClass.KEY_KEYWORD, tokenIterator))
+        {
+            declaration = parseKeyDeclaration(tokenIterator);
+        }
+        else if(expect(PAQLTokenClass.IDENTIFIER, tokenIterator))
+        {
+            declaration = parseVariableDeclaration(tokenIterator);
+        }
+        else
+        {
+            throw new RuntimeError
+            {
+                "Syntactic error:"
+                +
+                "\n\tline:"
+                +
+                streamTokenizer.lineno()
+                +
+                "\n\terror: declaration expected"
+            }
+        }
+        return construct;
+    }
+    private ParseTree parseKeyDeclaration
+    (
+        Iterator< Token<PAQLTokenClass> > tokenIterator
+    )
+    {
+        KeyDeclaration keyDeclaration = new KeyDeclaration();
+        tokenIterator.next();
+        keyDeclaration.add(parseVariableDeclaration(tokenIterator));
+        return keyDeclaration;
+    }
+    private ParseTree parseVariableDeclaration
+    (
+        Iterator< Token<PAQLTokenClass> > tokenIterator
+    )
+    {
+        VariableDeclaration variableDeclaration = new VariableDeclaration();
+        PAQLTokenClass[] sequence =
+            new PAQLTokenClass[]
+            {
+                PAQLTokenClass.IDENTIFIER,
+                PAQLTokenClass.IDENTIFIER,
+                PAQLTokenClass.SEMICOLON
+            };
+        String[] missingItem = new String[]{"type", "identifier", ";"};
+        for(int i = 0; i < 3; i++)
+        {
+            if(!expect(sequence[i], tokenIterator))
+            {
+                throw new RuntimeError
+                {
+                    "Syntactic error:"
+                    +
+                    "\n\tline:"
+                    +
+                    streamTokenizer.lineno()
+                    +
+                    "\n\terror: "
+                    +
+                    missingItem[i]
+                    +
+                    " expected"
+                }
+            }
+            if(i < 2)
+            {
+                variableDeclaration.add
+                (
+                    (
+                        (EvaluableToken<PAQLTokenClass,String>)tokenIterator
+                    ).getValue()
+                );
+            }
+            tokenIterator.next();
+        }
+        return variableDeclaration;
+    }
+    private ParseTree parseContainer
+    (
+        Iterator< Token<PAQLTokenClass> > tokenIterator
+    )
+    {
+        Container container = new Container();
+        PAQLTokenClass[] sequence =
+            new PAQLTokenClass[]
+            {
+                PAQLTokenClass.LEFT_ANGULAR_BRACKET,
+                PAQLTokenClass.IDENTIFIER,
+                PAQLTokenClass.RIGHT_ANGULAR_BRACKET,
+                PAQLTokenClass.IDENTIFIER,
+                PAQLTokenClass.SEMICOLON
+            };
+        String[] missingItem = new String[]{"<", "identifier", ">", "identifier", ";"};
+        tokenIterator.next();
+        for(int i = 0; i < 5; i++)
+        {
+            if(!expect(sequence[i], tokenIterator))
+            {
+                throw new RuntimeError
+                {
+                    "Syntactic error:"
+                    +
+                    "\n\tline:"
+                    +
+                    streamTokenizer.lineno()
+                    +
+                    "\n\terror: "
+                    +
+                    missingItem[i]
+                    +
+                    " expected"
+                }
+            }
+            if(i == 1 || i == 3)
+            {
+                container.add
+                (
+                    (
+                        (EvaluableToken<PAQLTokenClass,String>)tokenIterator
+                    ).getValue()
+                );
+            }
+            tokenIterator.next();
+        }
+        return container;
+    }
+    private ParseTree parseQuery
+    (
+        Iterator< Token<PAQLTokenClass> > tokenIterator
+    )
+    {
+        Query query = new Query();
+        PAQLTokenClass[] sequence =
+            new PAQLTokenClass[]
+            {
+                PAQLTokenClass.LEFT_ANGULAR_BRACKET,
+                PAQLTokenClass.IDENTIFIER,
+                PAQLTokenClass.RIGHT_ANGULAR_BRACKET,
+                PAQLTokenClass.IDENTIFIER,
+                PAQLTokenClass.LEFT_PARENTHESIS,
+                PAQLTokenClass.IDENTIFIER,
+                PAQLTokenClass.RIGHT_PARENTHESIS,
+                PAQLTokenClass.SEMICOLON
+            };
+        String[] missingItem =
+            new String[]
+            {
+                "<",
+                "identifier",
+                ">",
+                "identifier",
+                "(",
+                "identifier",
+                ")",
+                ";"
+            };
+        tokenIterator.next();
+        for(int i = 0; i < 8; i++)
+        {
+            if(!expect(sequence[i], tokenIterator))
+            {
+                throw new RuntimeError
+                {
+                    "Syntactic error:"
+                    +
+                    "\n\tline:"
+                    +
+                    streamTokenizer.lineno()
+                    +
+                    "\n\terror: "
+                    +
+                    missingItem[i]
+                    +
+                    " expected"
+                }
+            }
+            if(i == 1 || i == 3 || i == 5)
+            {
+                query.add
+                (
+                    (
+                        (EvaluableToken<PAQLTokenClass,String>)tokenIterator
+                    ).getValue()
+                );
+            }
+            tokenIterator.next();
+        }
+        return query;
     }
     public ParseTree transform(List< Token<PAQLTokenClass> > tokenList)
     {

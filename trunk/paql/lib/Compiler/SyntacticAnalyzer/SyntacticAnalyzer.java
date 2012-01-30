@@ -31,20 +31,10 @@ extends System< List< Token<TokenClass> >, ParseTree>
 {
     public boolean expect
     (
-        Token<TokenClass> expectedToken,
+        TokenClass expectedMetaType,
         Iterator< Token<TokenClass> > tokenToCheck
     )
     {
-        return
-            (expectedToken.getToken() == tokenToCheck.getToken())
-            &&
-            (
-                (
-                    expectedToken.getStringRepresentation()
-                ).compare
-                (
-                    tokenToCheck.getStringRepresentation()
-                ) == 0
-            );
+        return(tokenToCheck.getMetaType() == expectedMetaType);
     }
 }

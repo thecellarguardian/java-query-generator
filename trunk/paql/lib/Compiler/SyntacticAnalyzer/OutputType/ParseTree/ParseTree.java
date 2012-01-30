@@ -20,6 +20,7 @@
 
 abstract class ParseTree
 {
+    abstract public void add();
     public boolean expect
     (
         Token<TokenClass> expectedToken,

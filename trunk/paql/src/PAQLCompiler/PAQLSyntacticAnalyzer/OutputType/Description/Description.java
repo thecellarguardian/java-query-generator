@@ -29,7 +29,7 @@ import java.util.LinkedList;
 public class Description extends ParseTree
 {
     private List<ParseTree> constructs = new LinkedList<ParseTree>;
-    public void addConstruct(ParseTree constructToAdd)
+    public void add(ParseTree constructToAdd)
     {
         constructs.add(constructToAdd);
     }
