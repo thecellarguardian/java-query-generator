@@ -22,8 +22,8 @@ package paql.lib.Compiler.LexicalAnalyzer.OutputType.Token;
 
 public class Token<TokenClass>
 {
-    private TokenClass metaType;
-    private int lineNumber = -1;
+    protected TokenClass metaType;
+    protected int lineNumber = -1;
     public Token(TokenClass metaTypeToSet){metaType = metaTypeToSet;}
     public Token(TokenClass metaTypeToSet, int lineNumberToSet)
     {

@@ -2,9 +2,13 @@ package paql.test;
 import java.io.*;
 import java.util.*;
 import paql.lib.Compiler.LexicalAnalyzer.LexicalAnalyzer;
+import paql.lib.Compiler.SyntacticAnalyzer.SyntacticAnalyzer;
 import paql.lib.Compiler.LexicalAnalyzer.OutputType.Token.Token;
+import paql.lib.Compiler.SyntacticAnalyzer.OutputType.ParseTree.ParseTree;
 import paql.src.PAQLCompiler.PAQLLexicalAnalyzer.PAQLTokenClass.PAQLTokenClass;
 import paql.src.PAQLCompiler.PAQLLexicalAnalyzer.PAQLLexicalAnalyzer;
+import paql.src.PAQLCompiler.PAQLSyntacticAnalyzer.PAQLParseTreeClass.PAQLParseTreeClass;
+import paql.src.PAQLCompiler.PAQLSyntacticAnalyzer.PAQLSyntacticAnalyzer;
 
 public class Test
 {
@@ -22,19 +26,18 @@ public class Test
         }
         LexicalAnalyzer<PAQLTokenClass> lexicalAnalyzer =
             new PAQLLexicalAnalyzer();
-        List< Token<PAQLTokenClass> > l;
+        SyntacticAnalyzer<PAQLTokenClass, PAQLParseTreeClass> syntacticAnalyzer =
+            new PAQLSyntacticAnalyzer();
+        ParseTree<PAQLParseTreeClass> p;
         try
         {
-            l = lexicalAnalyzer.transform(file);
+            p = syntacticAnalyzer.transform(lexicalAnalyzer.transform(file));
         }
         catch(RuntimeException exception)
         {
             System.out.println(exception.getMessage());
             return;
         }
-        for(Token<PAQLTokenClass> token : l)
-        {
-            System.out.println(token);
-        }
+        System.out.println(p.toString(0));
     }
 }

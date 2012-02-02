@@ -1,5 +1,5 @@
 /**
- * @file Description.java
+ * @file DeclarationBlock.java
  * @author Cosimo Sacco <cosimosacco@gmail.com>
  *
  * @section LICENSE
@@ -18,17 +18,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **/
 
-package paql.src.PAQLCompiler.PAQLSyntacticAnalyzer.OutputType.Description;
+package paql.src.PAQLCompiler.PAQLSyntacticAnalyzer.OutputType.Description.Element.DeclarationBlock;
 
 import paql.lib.Compiler.SyntacticAnalyzer.OutputType.ParseTree.ParseTree;
 import paql.src.PAQLCompiler.PAQLSyntacticAnalyzer.PAQLParseTreeClass.PAQLParseTreeClass;
 
 import java.util.LinkedList;
 
-public class Description extends ParseTree<PAQLParseTreeClass>
+public class DeclarationBlock extends ParseTree<PAQLParseTreeClass>
 {
-    public Description()
+    public DeclarationBlock()
     {
-        super(PAQLParseTreeClass.DESCRIPTION);
+        super(PAQLParseTreeClass.DECLARATION_BLOCK);
     }
 }

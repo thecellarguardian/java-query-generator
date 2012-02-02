@@ -1,5 +1,5 @@
 /**
- * @file Description.java
+ * @file PAQLParseTreeClass.java
  * @author Cosimo Sacco <cosimosacco@gmail.com>
  *
  * @section LICENSE
@@ -18,17 +18,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **/
 
-package paql.src.PAQLCompiler.PAQLSyntacticAnalyzer.OutputType.Description;
+package paql.src.PAQLCompiler.PAQLSyntacticAnalyzer.PAQLParseTreeClass;
 
-import paql.lib.Compiler.SyntacticAnalyzer.OutputType.ParseTree.ParseTree;
-import paql.src.PAQLCompiler.PAQLSyntacticAnalyzer.PAQLParseTreeClass.PAQLParseTreeClass;
-
-import java.util.LinkedList;
-
-public class Description extends ParseTree<PAQLParseTreeClass>
+public enum PAQLParseTreeClass
 {
-    public Description()
-    {
-        super(PAQLParseTreeClass.DESCRIPTION);
-    }
+    DESCRIPTION,
+    QUERY,
+    CONTAINER,
+    ELEMENT,
+    DECLARATION_BLOCK,
+    KEY_DECLARATION,
+    VARIABLE_DECLARATION
 }

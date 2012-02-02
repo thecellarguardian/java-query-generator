@@ -18,25 +18,42 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **/
 
-abstract class ParseTree
+package paql.lib.Compiler.SyntacticAnalyzer.OutputType.ParseTree;
+
+import java.util.*;
+
+public abstract class ParseTree<ParseTreeClass>
 {
-    abstract public void add();
-    public boolean expect
-    (
-        Token<TokenClass> expectedToken,
-        Iterator< Token<TokenClass> > tokenToCheck
-    )
+    protected ParseTreeClass parseTreeMetaType;
+    protected List< ParseTree<ParseTreeClass> > childrenNodes =
+        new LinkedList< ParseTree<ParseTreeClass> >();
+    public ParseTree(ParseTreeClass parseTreeMetaTypeToSet)
     {
-        return
-            (expectedToken.getToken() == tokenToCheck.getToken())
-            &&
-            (
-                (
-                    expectedToken.getStringRepresentation()
-                ).compare
-                (
-                    tokenToCheck.getStringRepresentation()
-                ) == 0
-            );
+        parseTreeMetaType = parseTreeMetaTypeToSet;
+    }
+    public void add(ParseTree<ParseTreeClass> subTree)
+    {
+        childrenNodes.add(subTree);
+    }
+    ParseTreeClass getMetaType(){return parseTreeMetaType;}
+    public String toString(int level)
+    {
+        String treeRepresentation = new String(parseTreeMetaType + "\n");
+        Iterator< ParseTree<ParseTreeClass> > i = childrenNodes.iterator();
+        ParseTree<ParseTreeClass> child = (i.hasNext())? i.next() : null;
+        for
+        (
+            ;
+            i.hasNext();
+            child = i.next()
+        )
+        {
+            for(int j = 0; j <= level; j++)
+            {
+                treeRepresentation += "\t";
+            }
+            treeRepresentation += child.toString(level + 1);
+        }
+        return treeRepresentation;
     }
 }

@@ -1,5 +1,5 @@
 /**
- * @file Description.java
+ * @file TerminalParseTree.java
  * @author Cosimo Sacco <cosimosacco@gmail.com>
  *
  * @section LICENSE
@@ -18,17 +18,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **/
 
-package paql.src.PAQLCompiler.PAQLSyntacticAnalyzer.OutputType.Description;
-
+package paql.lib.Compiler.SyntacticAnalyzer.OutputType.ParseTree.TerminalParseTree;
 import paql.lib.Compiler.SyntacticAnalyzer.OutputType.ParseTree.ParseTree;
-import paql.src.PAQLCompiler.PAQLSyntacticAnalyzer.PAQLParseTreeClass.PAQLParseTreeClass;
+import paql.lib.Compiler.LexicalAnalyzer.OutputType.Token.Token;
 
-import java.util.LinkedList;
+import java.util.*;
 
-public class Description extends ParseTree<PAQLParseTreeClass>
+public abstract class TerminalParseTree<ParseTreeClass, TokenClass>
+extends ParseTree<ParseTreeClass>
 {
-    public Description()
+    public TerminalParseTree(ParseTreeClass parseTreeMetaTypeToSet)
     {
-        super(PAQLParseTreeClass.DESCRIPTION);
+        super(parseTreeMetaTypeToSet);
     }
+    public TokenClass[] terminalSequence;
+    public Integer[] retrievePoints;
+    public interface RetrieveAdapter<TokenClass>
+    {
+        void retrieve(Token<TokenClass> token);
+    }
+    public RetrieveAdapter<TokenClass>[] retrieveAdapter;
 }
