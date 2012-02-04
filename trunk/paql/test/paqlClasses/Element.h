@@ -30,7 +30,6 @@ struct Element
     char c;
     int i;
     double d;
-
 };
 
 #endif

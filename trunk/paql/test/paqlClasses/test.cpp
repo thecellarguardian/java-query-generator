@@ -1,5 +1,7 @@
 #include <iostream>
+#include "Element.h"
 #include "Container.h"
+#include "Query.h"
 
 int main()
 {
@@ -20,7 +22,7 @@ int main()
     ee.i++;
     Element& ef = c.get<1>("ciao1", true, 2.1);
     std::cout << ef.i << std::endl;
-    c.remove<1>("ciao1", true, 2.1);
+    c.remove(ef);
     //std::cout << ee.s << ee.b << ee.c <<  ee.i << ee.d << std::endl;
     return 0;
 }
