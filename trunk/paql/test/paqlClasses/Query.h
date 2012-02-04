@@ -36,9 +36,9 @@ class Query
         std::list<boost::reference_wrapper<Element> > execute() //metodo standard generato in assenza di clausola where
         {
             std::list<boost::reference_wrapper<Element> > listToReturn;
-            for(std::list<Element>::iterator i = container.begin(); i != container.end(); i++)
+            for(std::list< boost::reference_wrapper<Element> >::iterator i = container.begin(); i != container.end(); i++)
             {
-                listToReturn.push_back(boost::ref(*i)); //PARAMETER COPY!
+                listToReturn.push_back((*i)); //PARAMETER COPY!
             }
             return listToReturn; //PARAMETER COPY!
         }

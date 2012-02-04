@@ -30,6 +30,7 @@
 #include <boost/fusion/include/at_c.hpp>
 #include <boost/fusion/support/pair.hpp>
 #include <boost/fusion/include/pair.hpp>
+#include <boost/ref.hpp>
 #include <map>
 #include <list>
 #include <string>
@@ -58,18 +59,18 @@ template <typename KeyType> class FusionVectorComparator
 
 template <typename T> class ContentComparator
 {
-    const T& first;
+    boost::reference_wrapper<T> first;
     public:
-        ContentComparator(const T& firstToSet) : first(firstToSet){}
-        bool operator()(const T& elementToCheck) const
+        ContentComparator(boost::reference_wrapper<T> firstToSet) : first(firstToSet){}
+        bool operator()(boost::reference_wrapper<T> elementToCheck) const
         {
-            return elementToCheck == first;
+            return ((typename boost::unwrap_reference<T>::type)elementToCheck) == ((typename boost::unwrap_reference<T>::type)first);
         }
 };
 
 /*----------------------------------------------------------------------------*/
 //Il codice seguente è generato
-class Container : public std::list<Element>, //</GENERATOR: ci mette Element e il nome classe>
+class Container : public std::list< boost::reference_wrapper<Element> >, //</GENERATOR: ci mette Element e il nome classe>
 public virtual boost::fusion::map
 <
     /* <GENERATOR: per ogni chiave dichiara una entry di una meta-mappa,
@@ -80,7 +81,7 @@ public virtual boost::fusion::map
         std::map //Valore metamappa
         <
             boost::fusion::vector<char>, //Chiave mappa
-            Element, //Valore mappa
+            boost::reference_wrapper<Element>, //Valore mappa
             FusionVectorComparator< boost::fusion::vector<char> > //Comparator
         >
     >,
@@ -90,7 +91,7 @@ public virtual boost::fusion::map
         std::map //Valore metamappa
         <
             boost::fusion::vector<std::string, bool, double>, //Chiave mappa
-            Element, //Valore mappa
+            boost::reference_wrapper<Element>, //Valore mappa
             FusionVectorComparator<boost::fusion::vector<std::string, bool, double> > //Comparatore
         >
     >
@@ -103,38 +104,45 @@ public virtual boost::fusion::map
             typedef boost::fusion::vector<char> KeyType;
             typedef MetaKey<KeyType, keyIndex> MetaKeyType;
             KeyType key(a0);
-            return (boost::fusion::at_key<MetaKeyType>(*this))[key];
+            return (boost::unwrap_reference<Element>::type&)(((boost::fusion::at_key<MetaKeyType>(*this)).find(key))->second);
         }
         template<int keyIndex> Element& get(const std::string& a0, const bool& a1, const double& a2)
         {
             typedef boost::fusion::vector<std::string, bool, double> KeyType;
             typedef MetaKey<KeyType, keyIndex> MetaKeyType;
             KeyType key(a0, a1, a2);
-            return (boost::fusion::at_key<MetaKeyType>(*this))[key];
+            return (boost::unwrap_reference<Element>::type&)(((boost::fusion::at_key<MetaKeyType>(*this)).find(key))->second);
         }
-        bool insert(const Element& element) //nella derivata!
+        bool insert(Element& element) //nella derivata!
         {
             //per ogni chiave genero il fusion vector adeguato, la metakey
             //adeguata e inserisco l' elemento
+            boost::reference_wrapper<Element> elementToInsert = boost::ref<Element>(element);
             {
                 typedef boost::fusion::vector<char> KeyType;
                 typedef MetaKey<KeyType, 0> MetaKeyType;
                 KeyType key(element.c);
                 if((boost::fusion::at_key<MetaKeyType>(*this)).count(key)) return false;
-                (boost::fusion::at_key<MetaKeyType>(*this))[key] = element;
+                (boost::fusion::at_key<MetaKeyType>(*this)).insert
+                (
+                    std::map< KeyType, boost::reference_wrapper<Element>, FusionVectorComparator< KeyType > >::value_type(key, elementToInsert)
+                );
             }
             {
                 typedef boost::fusion::vector<std::string, bool, double> KeyType;
                 typedef MetaKey<KeyType, 1> MetaKeyType;
                 KeyType key(element.s, element.b, element.d);
                 if((boost::fusion::at_key<MetaKeyType>(*this)).count(key)) return false;
-                (boost::fusion::at_key<MetaKeyType>(*this))[key] = element;
+                (boost::fusion::at_key<MetaKeyType>(*this)).insert
+                (
+                    std::map< KeyType, boost::reference_wrapper<Element>, FusionVectorComparator< KeyType > >::value_type(key, elementToInsert)
+                );
             }
-            this->push_back(element);
+            this->push_back(boost::ref(element));
             return true;
             //Infine
         }
-        void remove(const Element& element)
+        void remove(Element& element)
         {
             {
                 typedef boost::fusion::vector<char> KeyType;
@@ -148,9 +156,8 @@ public virtual boost::fusion::map
                 KeyType key(element.s, element.b, element.d);
                 (boost::fusion::at_key<MetaKeyType>(*this)).erase(key);
             }
-            this->remove_if(ContentComparator<Element>(element));
+            this->remove_if(ContentComparator<Element>(boost::ref(element)));
         }
-
 };
 
 #endif
