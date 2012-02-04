@@ -30,6 +30,15 @@ struct Element
     char c;
     int i;
     double d;
+    bool operator==(const Element& elementToCompare) const
+    {
+        return
+            (elementToCompare.s.compare(s) == 0) &&
+            (elementToCompare.b == b) &&
+            (elementToCompare.c == c) &&
+            (elementToCompare.i == i) &&
+            (elementToCompare.d == d);
+    }
 };
 
 #endif

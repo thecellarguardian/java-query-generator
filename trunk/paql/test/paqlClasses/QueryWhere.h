@@ -1,5 +1,5 @@
 /**
- * @file Query.h
+ * @file QueryWhere.h
  * @author Cosimo Sacco <cosimosacco@gmail.com>
  *
  * @section LICENSE
@@ -24,21 +24,21 @@
 #include <list>
 #include <boost/ref.hpp>
 
-#ifndef QUERY_H
-#define QUERY_H
+#ifndef QUERY_WHERE_H
+#define QUERY_WHERE_H
 
 class Query
 {
     private:
-        Container& container;
+        const Container& container;
     public:
-        Query(Container& containerToSet) : container(containerToSet){}
-        std::list<boost::reference_wrapper<Element> > execute() //metodo standard generato in assenza di clausola where
+        Query(const Container& containerToSet) : container(containerToSet){}
+        std::list<Element> execute(std::string s, bool b, double d) //metodo standard generato in assenza di clausola where
         {
-            std::list<boost::reference_wrapper<Element> > listToReturn;
-            for(std::list<Element>::iterator i = container.begin(); i != container.end(); i++)
+            std::list<Element> listToReturn;
+            for(std::list<Element>::const_iterator i = container.begin(); i != container.end(); i++)
             {
-                listToReturn.push_back(boost::ref(*i)); //PARAMETER COPY!
+                listToReturn.push_back(*i); //PARAMETER COPY!
             }
             return listToReturn; //PARAMETER COPY!
         }

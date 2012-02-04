@@ -41,6 +41,9 @@
 #ifndef CONTAINER_H
 #define CONTAINER_H
 
+/*----------------------------------------------------------------------------*/
+//Gli elementi qui racchiusi stanno per conto loro in una libreria
+
 template <typename KeyType, int i> class MetaKey{};
 
 template <typename KeyType> class FusionVectorComparator
@@ -53,18 +56,20 @@ template <typename KeyType> class FusionVectorComparator
         }
 };
 
-template <typename T> class AddressComparator
+template <typename T> class ContentComparator
 {
-    const T* first;
+    const T& first;
     public:
-        AddressComparator(const T* firstToSet) : first(firstToSet){}
-        bool operator()(const T& elementToCheck)
+        ContentComparator(const T& firstToSet) : first(firstToSet){}
+        bool operator()(const T& elementToCheck) const
         {
-            return (void*)&elementToCheck == (void*)first;
+            return elementToCheck == first;
         }
 };
 
-class Container : public std::list<Element>, //</GENERATOR: ci mette Element>
+/*----------------------------------------------------------------------------*/
+//Il codice seguente è generato
+class Container : public std::list<Element>, //</GENERATOR: ci mette Element e il nome classe>
 public virtual boost::fusion::map
 <
     /* <GENERATOR: per ogni chiave dichiara una entry di una meta-mappa,
@@ -143,8 +148,9 @@ public virtual boost::fusion::map
                 KeyType key(element.s, element.b, element.d);
                 (boost::fusion::at_key<MetaKeyType>(*this)).erase(key);
             }
-            this->remove_if(AddressComparator<Element>(&element));
+            this->remove_if(ContentComparator<Element>(element));
         }
+
 };
 
 #endif
