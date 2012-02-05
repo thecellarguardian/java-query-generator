@@ -59,15 +59,18 @@ template <typename KeyType> class FusionVectorComparator
 
 template <typename T> class ContentComparator
 {
+    //BOOST STATIC ASSERT!
     boost::reference_wrapper<T> first;
     public:
         ContentComparator(boost::reference_wrapper<T> firstToSet) : first(firstToSet){}
         bool operator()(boost::reference_wrapper<T> elementToCheck) const
         {
-            return ((typename boost::unwrap_reference<T>::type)elementToCheck) == ((typename boost::unwrap_reference<T>::type)first);
+            return
+                ((typename boost::unwrap_reference<T>::type)elementToCheck)
+                ==
+                ((typename boost::unwrap_reference<T>::type)first);
         }
 };
-
 /*----------------------------------------------------------------------------*/
 //Il codice seguente è generato
 class Container : public std::list< boost::reference_wrapper<Element> >, //</GENERATOR: ci mette Element e il nome classe>

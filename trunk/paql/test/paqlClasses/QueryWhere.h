@@ -36,10 +36,7 @@ class Query
         std::list<Element> execute(std::string s, bool b, double d) //metodo standard generato in assenza di clausola where
         {
             std::list<Element> listToReturn;
-            for(std::list<Element>::const_iterator i = container.begin(); i != container.end(); i++)
-            {
-                listToReturn.push_back(*i); //PARAMETER COPY!
-            }
+
             return listToReturn; //PARAMETER COPY!
         }
 };
