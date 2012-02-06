@@ -1,26 +1,22 @@
-element Book
+element Person
 {
-	key {int ciao;}
-	key {int a; char b; Distic c;}
+	key {Genoma personalSequence;}
+	key {int identityCode; string nation;}
 	{
-		int price;
-		string aaa;
+		string name;
+		string surname;
+		int age;
+		char sex;
 	}
 }
 
-element BB
+element Nation
 {
-	key { type3 id4; type2 id4;}
-	{
-		type1 identifier1;
-		type2 id3;
-	}
+	key{string nationName;}
+	{PersonList inhabitants;}
 }
 
-container<Book> Shelf;
-container<Book> Shelf1;
+container<Person> Nation;
 
-query<Book> Query(Shelf);
+query<Person> echelon(Nation);
 
-container<BB> c1;
-query<BB> Query1(c1);
