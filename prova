@@ -1,0 +1,25 @@
+element Book
+{
+	key {int ciao;}
+	key {int a; char b; Distic c;}
+	{
+		int price;
+	}
+}
+
+element BB
+{
+	key { type3 id4; type2 id4;}
+	{
+		type1 identifier1;
+		type2 id3;
+	}
+}
+
+container<Book> Shelf;
+container<Book> Shelf1;
+
+query<Book> Query(Shelf);
+
+container<BB> c1;
+query<BB> Query1(c1);
