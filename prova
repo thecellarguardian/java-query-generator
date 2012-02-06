@@ -4,6 +4,7 @@ element Book
 	key {int a; char b; Distic c;}
 	{
 		int price;
+		string aaa;
 	}
 }
 
