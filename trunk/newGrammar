@@ -1,0 +1,8 @@
+DESCRIPTION -> ELEMENT DESCRIPTION | CONTAINER DESCRIPTION | QUERY DESCRIPTION |.
+ELEMENT -> element elemid lcbrace DECBLOCK rcbrace.
+DECBLOCK -> KEY DECBLOCK | VARDECBLOCK.
+KEY -> key lcbrace VARDECBLOCK rcbrace.
+VARDECBLOCK -> VARIABLE VARDECBLOCK | .
+VARIABLE -> typeid varid semicolon.
+CONTAINER -> container labrace elemid rabrace contid semicolon.
+QUERY -> query labrace elemid rabrace queryid lpar contid rpar semicolon.
