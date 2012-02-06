@@ -21,7 +21,9 @@
 package paql.lib.Compiler.CodeGenerator;
 
 import  paql.lib.System.System;
-import paql.lib.Compiler.CodeGenerator.CodeGenerator.OutputType.SourceFile.SourceFile;
+import paql.lib.Compiler.CodeGenerator.OutputType.SourceFile.SourceFile;
 
-interface CodeGenerator<SemanticStructure>
+import java.util.List;
+
+public interface CodeGenerator<SemanticStructure>
 extends System< SemanticStructure, List<SourceFile> >{}

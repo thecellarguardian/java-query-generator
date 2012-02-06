@@ -28,4 +28,7 @@ javac \
 	paql/lib/Compiler/SemanticAnalyzer/SemanticAnalyzer.java \
 	paql/src/PAQLCompiler/PAQLSemanticAnalyzer/PAQLSemanticAnalyzer.java \
 	paql/src/PAQLCompiler/PAQLSemanticAnalyzer/OutputType/PAQLSemanticStructure/PAQLSemanticStructure.java \
-	paql/src/PAQLCompiler/PAQLSemanticAnalyzer/OutputType/PAQLSemanticStructure/ElementInformation/ElementInformation.java
+	paql/src/PAQLCompiler/PAQLSemanticAnalyzer/OutputType/PAQLSemanticStructure/ElementInformation/ElementInformation.java \
+	paql/lib/Compiler/CodeGenerator/CodeGenerator.java \
+	paql/lib/Compiler/CodeGenerator/OutputType/SourceFile/SourceFile.java \
+	paql/src/PAQLCompiler/PAQLCodeGenerator/PAQLCodeGenerator.java

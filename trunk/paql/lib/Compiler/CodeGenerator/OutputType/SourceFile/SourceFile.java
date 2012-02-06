@@ -18,11 +18,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **/
 
-package paql.lib.Compiler.CodeGenerator.OutputType.SourceFile.SourceFile;
+package paql.lib.Compiler.CodeGenerator.OutputType.SourceFile;
 
-import java.io.*
+import java.io.*;
 
-class SourceFile
+public class SourceFile
 {
     private String fileName;
     private String sourceCode;
@@ -35,12 +35,19 @@ class SourceFile
     {
         fileName = fileNameToSet;
         sourceCode = new String();
-        while(sourceCodeSource.ready())
+        try
         {
-            sourceCode += sourceCodeSource.readLine();
+            while(sourceCodeSource.ready())
+            {
+                sourceCode += sourceCodeSource.readLine();
+            }
+        }
+        catch(Exception e)
+        {
+            throw new RuntimeException("Cannot read " + fileName);
         }
     }
-    public writeSourceFile()
+    public void writeSourceFile()
     {
         try
         {

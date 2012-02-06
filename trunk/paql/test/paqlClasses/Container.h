@@ -36,9 +36,6 @@
 #include <string>
 #include <algorithm>
 
-#include <iostream>
-#include <typeinfo>
-
 #ifndef CONTAINER_H
 #define CONTAINER_H
 
@@ -49,17 +46,15 @@ template <typename KeyType, int i> class MetaKey{};
 
 template <typename KeyType> class FusionVectorComparator
 {
-    //BOOST STATIC ASSERT!
     public:
         bool operator()(const KeyType& a, const KeyType& b) const
         {
-            return boost::fusion::at_c<0>(a) < boost::fusion::at_c<0>(b); //Attenzione!!! Non tutti hanno <
+            return boost::fusion::at_c<0>(a) < boost::fusion::at_c<0>(b);
         }
 };
 
 template <typename T> class ContentComparator
 {
-    //BOOST STATIC ASSERT!
     boost::reference_wrapper<T> first;
     public:
         ContentComparator(boost::reference_wrapper<T> firstToSet) : first(firstToSet){}
