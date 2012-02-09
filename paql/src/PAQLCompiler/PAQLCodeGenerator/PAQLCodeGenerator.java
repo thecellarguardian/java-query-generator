@@ -21,6 +21,7 @@
 package paql.src.PAQLCompiler.PAQLCodeGenerator;
 
 import paql.lib.Pair.Pair;
+import paql.lib.Triple.Triple;
 import paql.lib.Compiler.CodeGenerator.CodeGenerator;
 import paql.src.PAQLCompiler.PAQLSemanticAnalyzer.OutputType.PAQLSemanticStructure.PAQLSemanticStructure;
 import paql.src.PAQLCompiler.PAQLSemanticAnalyzer.OutputType.PAQLSemanticStructure.ElementInformation.ElementInformation;
@@ -251,8 +252,61 @@ implements CodeGenerator<PAQLSemanticStructure>
             methodIterator = removeSections.iterator();
             while(methodIterator.hasNext()){sourceString += methodIterator.next();}
             sourceString += "\t\t\t\tthis->remove_if(ContentComparator<paql::element::" + containedType + ">(boost::ref(element)));\n\t\t\t}\n";
-            sourceString += "\t\t};\n\t}\n}";
+            sourceString += "\t\t};\n\t}\n}\n\n#endif";;
             sourceCode.add(new SourceFile(containerClass + ".h", sourceString));
+        }
+    }
+    private void serializeQueries
+    (
+        LinkedHashSet< Triple<String, String, String> > queryDataStructure,
+        LinkedHashSet< Pair<String, String> > containerDataStructure,
+        HashMap<String, ElementInformation> elementsDataStructure,
+        List<SourceFile> sourceCode
+    )
+    {
+        Iterator< Triple<String, String, String> > queryIterator = queryDataStructure.iterator();
+        while(queryIterator.hasNext())
+        {
+            Triple<String, String, String> query = queryIterator.next();
+            String queryType = query.getFirst();
+            String containerType = query.getSecond();
+            String elementType = query.getThird();
+            String containerClass = elementType + containerType;
+            String queryClass = containerClass + queryType;
+            String sourceString =
+                new String
+                (
+                    header
+                    + "#include \"" + elementType + ".h\"\n"
+                    + "#include \"" + containerClass + ".h\"\n"
+                    + "#include <list>\n"
+                    + "#include <boost/ref.hpp>\n\n"
+                );
+            sourceString +=
+                "#ifndef __" + queryClass.toUpperCase() + "_" + containerClass.toUpperCase() + "_QUERY_H__\n"
+                + "#define __" + queryClass.toUpperCase() + "_" + containerClass.toUpperCase() + "_QUERY_H__\n\n"
+
+                + "namespace paql\n{\n\tnamespace query\n\t{\n"
+                + "\t\tclass " + queryClass + "\n"
+                + "\t\t{\n"
+                + "\t\t\tprivate:\n"
+                + "\t\t\t\tpaql::container::" + containerClass + "& container;\n"
+                + "\t\t\tpublic:\n"
+                + "\t\t\t\t" + queryClass + "(paql::container::" + containerClass + "& containerToSet) : container(containerToSet){}\n"
+                + "\t\t\t\tstd::list<boost::reference_wrapper<paql::element::" + elementType + "> > execute()\n"
+                + "\t\t\t\t{\n"
+                + "\t\t\t\t\tstd::list<boost::reference_wrapper<paql::element::" + elementType + "> > listToReturn;\n"
+                + "\t\t\t\t\tfor(std::list< boost::reference_wrapper<paql::element::" + elementType + "> >::iterator i = container.begin(); i != container.end(); i++)\n"
+                + "\t\t\t\t\t{\n"
+                + "\t\t\t\t\t\tlistToReturn.push_back((*i));\n"
+                + "\t\t\t\t\t}\n"
+                + "\t\t\t\t\treturn listToReturn;\n"
+                + "\t\t\t\t}\n"
+                + "\t\t};\n"
+                + "\t}\n"
+                + "}\n\n"
+                + "#endif";
+            sourceCode.add(new SourceFile(queryClass + ".h", sourceString));
         }
     }
     public PAQLCodeGenerator()
@@ -285,7 +339,13 @@ implements CodeGenerator<PAQLSemanticStructure>
         makeLibraries(sourceCode);
         serializeElements(semanticStructure.elementsDataStructure, sourceCode);
         serializeContainers(semanticStructure.containerDataStructure, semanticStructure.elementsDataStructure, sourceCode);
-        //serializeQueries(semanticStructure.queryDataStructure, sourceCode);
+        serializeQueries
+        (
+            semanticStructure.queryDataStructure,
+            semanticStructure.containerDataStructure,
+            semanticStructure.elementsDataStructure,
+            sourceCode
+        );
         return sourceCode;
     }
 }
