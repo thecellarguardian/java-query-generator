@@ -1,24 +1,16 @@
-element Person
+element Student
 {
-	key {Genoma personalSequence;}
-	key {int identityCode; string nation;}
+	key {int code;}
 	{
 		string name;
 		string surname;
 		int age;
-		char sex;
+		string university;
+		string faculty;
+		string course;
 	}
 }
 
-element Nation
-{
-	key{string nationName;}
-	{PersonList inhabitants;}
-}
+container<Student> Class;
 
-container<Person> Nation;
-container<Nation> Nation;
-container<Person> Nation1;
-
-query<Person> echelon(Nation);
-
+query<Student> RetrieveAll(Class);
