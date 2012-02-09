@@ -68,7 +68,8 @@ template <typename T> class ContentComparator
 };
 /*----------------------------------------------------------------------------*/
 //Il codice seguente è generato
-class Container : public std::list< boost::reference_wrapper<Element> >, //</GENERATOR: ci mette Element e il nome classe>
+class Container :
+public std::list< boost::reference_wrapper<Element> >, //</GENERATOR: ci mette Element e il nome classe>
 public virtual boost::fusion::map
 <
     /* <GENERATOR: per ogni chiave dichiara una entry di una meta-mappa,

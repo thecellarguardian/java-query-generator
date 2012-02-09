@@ -58,32 +58,35 @@ implements CodeGenerator<PAQLSemanticStructure>
             +"#ifndef __PAQL_CONTAINER_LIBRARY_H__\n"
             +"#define __PAQL_CONTAINER_LIBRARY_H__\n\n"
 
-            +"template <typename KeyType, int i> class MetaKey{};\n\n"
+            +"namespace paql\n{\n"
 
-            +"template <typename KeyType> class FusionVectorComparator\n"
-            +"{\n"
-            +   "\tpublic:\n"
-            +       "\t\tbool operator()(const KeyType& a, const KeyType& b) const\n"
-            +       "\t\t{\n"
-            +           "\t\t\treturn boost::fusion::at_c<0>(a) < boost::fusion::at_c<0>(b);\n"
-            +       "\t\t}\n"
-            +"};\n\n"
+            +"\ttemplate <typename KeyType, int i> class MetaKey{};\n"
 
-            +"template <typename T> class ContentComparator\n"
-            +"{\n"
-            +   "\tprivate:\n"
-            +       "\t\tboost::reference_wrapper<T> first;"
-            +   "\tpublic:\n"
-            +       "\t\tContentComparator(boost::reference_wrapper<T> firstToSet)\n"
-            +       "\t\t: first(firstToSet){}\n"
-            +       "\t\tbool operator()(boost::reference_wrapper<T> elementToCheck) const\n"
-            +       "\t\t{\n"
-            +           "\t\t\treturn\n"
-            +               "\t\t\t\t((typename boost::unwrap_reference<T>::type)elementToCheck)\n"
-            +               "\t\t\t\t==\n"
-            +               "\t\t\t\t((typename boost::unwrap_reference<T>::type)first);\n"
-            +       "\t\t}\n"
-            +"};\n\n"
+            +"\ttemplate <typename KeyType> class FusionVectorComparator\n"
+            +"\t{\n"
+            +   "\t\tpublic:\n"
+            +       "\t\t\tbool operator()(const KeyType& a, const KeyType& b) const\n"
+            +       "\t\t\t{\n"
+            +           "\t\t\t\treturn boost::fusion::at_c<0>(a) < boost::fusion::at_c<0>(b);\n"
+            +       "\t\t\t}\n"
+            +"\t};\n"
+
+            +"\ttemplate <typename T> class ContentComparator\n"
+            +"\t{\n"
+            +   "\t\tprivate:\n"
+            +       "\t\t\tboost::reference_wrapper<T> first;"
+            +   "\t\tpublic:\n"
+            +       "\t\t\tContentComparator(boost::reference_wrapper<T> firstToSet)\n"
+            +       "\t\t\t: first(firstToSet){}\n"
+            +       "\t\t\tbool operator()(boost::reference_wrapper<T> elementToCheck) const\n"
+            +       "\t\t\t{\n"
+            +           "\t\t\t\treturn\n"
+            +               "\t\t\t\t\t((typename boost::unwrap_reference<T>::type)elementToCheck)\n"
+            +               "\t\t\t\t\t==\n"
+            +               "\t\t\t\t\t((typename boost::unwrap_reference<T>::type)first);\n"
+            +       "\t\t\t}\n"
+            +"\t};\n"
+            +"}\n\n"
             +"#endif"
             );
         sourceCode.add(containerLibrary);
@@ -103,27 +106,29 @@ implements CodeGenerator<PAQLSemanticStructure>
             String sourceString = new String(header + "#include <string>\nusing namespace std;\n\n" );
             String currentKey = key.next();
             ElementInformation currentInformation = information.next();
-            String className = new String(currentKey + "Element");
+            String className = new String(currentKey);
             sourceString +=
                 "#ifndef __" + currentKey.toUpperCase() + "_ELEMENT_H__\n"
                 +"#define __" + currentKey.toUpperCase() + "_ELEMENT_H__\n\n"
 
-                +"struct " + className + "\n"
-                +"{\n";
+                +"namespace paql\n{\n\tnamespace element\n\t{\n"
+
+                +"\t\tstruct " + className + "\n"
+                +"\t\t{\n";
             Iterator< Pair<String, String> > variable =
                 currentInformation.variableInformation.iterator();
             while(variable.hasNext())
             {
                 Pair<String, String> currentVariable = variable.next();
-                sourceString += "\t" + currentVariable.getFirst() + " " + currentVariable.getSecond() + ";\n";
+                sourceString += "\t\t\t" + currentVariable.getFirst() + " " + currentVariable.getSecond() + ";\n";
             }
-            sourceString += "\tbool operator==(const "+ className + "& elementToCompare) const\n\t{\n\treturn\n";
+            sourceString += "\t\t\tbool operator==(const "+ className + "& elementToCompare) const\n\t\t\t{\n\t\t\t\treturn\n";
             variable = currentInformation.variableInformation.iterator();
             while(variable.hasNext())
             {
                 Pair<String, String> currentVariable = variable.next();
                 sourceString +=
-                    "\t\t\t(elementToCompare."
+                    "\t\t\t\t\t(elementToCompare."
                     + currentVariable.getSecond()
                     +
                     (
@@ -133,8 +138,121 @@ implements CodeGenerator<PAQLSemanticStructure>
                             " == " + currentVariable.getSecond()+ ") &&\n"
                     );
             }
-            sourceString += "\t\t\t(true);\n\t}\n};\n\n#endif";
+            sourceString += "\t\t\t\t\t(true);\n\t\t\t}\n\t\t};\n\t}\n\n}\n\n#endif";
             sourceCode.add(new SourceFile(className + ".h", sourceString));
+        }
+    }
+    private void serializeContainers
+    (
+        LinkedHashSet< Pair<String, String> > containerDataStructure,
+        HashMap<String, ElementInformation> elementsDataStructure,
+        List<SourceFile> sourceCode
+    )
+    {
+        Iterator< Pair<String, String> > container = containerDataStructure.iterator();
+        while(container.hasNext())
+        {
+            Pair<String, String> containerInformation = container.next();
+            String containerType = containerInformation.getFirst();
+            String containedType = containerInformation.getSecond();
+            String containerClass = containedType + containerType;
+            String sourceString =
+                new String
+                (
+                    header
+                    + "#include \"" + containedType + ".h\"\n"
+                    + "#include \"PAQLContainerLibrary.h\"\n"
+                    + "#include <string>\n"
+                    + "using namespace std;\n\n"
+                );
+            sourceString +=
+                "#ifndef __" + containerClass.toUpperCase() + "_" + containedType.toUpperCase() + "_CONTAINER_H__\n"
+                +"#define __" + containerClass.toUpperCase() + "_" + containedType.toUpperCase() + "_CONTAINER_H__\n\n"
+
+                +"namespace paql\n{\n\tnamespace container\n\t{\n"
+                +"\t\tclass " + containerClass + " :\n"
+                +"\t\tpublic std::list< boost::reference_wrapper<paql::element::" + containedType + "> >,\n"
+                +"\t\tpublic virtual boost::fusion::map\n"
+                +"\t\t<\n";
+            ElementInformation containedElementInformation = elementsDataStructure.get(containedType);
+            Set<Integer> keySet = containedElementInformation.keyInformation.keySet();
+            Iterator<Integer> currentKeyIterator = keySet.iterator();
+            List<String> getMethods = new LinkedList<String>();
+            List<String> insertSections = new LinkedList<String>();
+            List<String> removeSections = new LinkedList<String>();
+            while(currentKeyIterator.hasNext())
+            {
+                String metaEntry = new String("\t\t\tboost::fusion::pair\n\t\t\t<\n");
+                String metaKey = new String("MetaKey<");
+                Integer currentKey = currentKeyIterator.next();
+                Iterator< Pair<String, String> > currentKeyVariableIterator = containedElementInformation.keyInformation.get(currentKey).iterator();
+                String fusionKey = "boost::fusion::vector<";
+                String getParameters = new String();
+                String getActualParameters = new String();
+                String elementKeyMembers = new String();
+                Integer keyArity = new Integer(0);
+                while(currentKeyVariableIterator.hasNext())
+                {
+                    Pair<String, String> currentKeyVariable = currentKeyVariableIterator.next();
+                    fusionKey += currentKeyVariable.getFirst();
+                    fusionKey += ((currentKeyVariableIterator.hasNext())? (", ") : (">"));
+                    elementKeyMembers += "element." + currentKeyVariable.getSecond() + ((currentKeyVariableIterator.hasNext())? (", ") : (""));
+                    getParameters += currentKeyVariable.getFirst() + " a" + keyArity + ((currentKeyVariableIterator.hasNext())? (", ") : (""));
+                    getActualParameters += "a" + keyArity + ((currentKeyVariableIterator.hasNext())? (", ") : (""));
+                    keyArity++;
+                }
+                metaKey += fusionKey;
+                metaKey += ", " + currentKey.toString() + ">";
+                metaEntry += "\t\t\t\t" + metaKey + ",\n";
+                String metaValue = "\t\t\t\tstd::map\n\t\t\t\t<\n\t\t\t\t\t" + fusionKey + ",\n\t\t\t\t\tboost::reference_wrapper<" + "paql::element::"
+                + containedType + ">,\n\t\t\t\t\tpaql::FusionVectorComparator< " + fusionKey + " >\n\t\t\t\t>";
+                metaEntry += metaValue + "\n\t\t\t>";
+                sourceString += metaEntry + ((currentKeyIterator.hasNext())? ",\n" : "\n");
+                getMethods.add
+                (
+                    new String
+                    (
+                        "\t\t\ttemplate<int keyIndex> paql::element::" + containedType + "& get(" + getParameters + ")\n"+
+                        "\t\t\t{\n\t\t\t\t" + fusionKey + "key(" + getActualParameters + ");\n" +
+                        "\t\t\t\treturn (boost::unwrap_reference<paql::element::" + containedType + ">::type&)"+
+                        "(((boost::fusion::at_key<"+ metaKey + " >(*this)).find(key))->second);\n\t\t\t}\n"
+                    )
+                );
+                insertSections.add
+                (
+                    "\t\t\t\t{\n"+
+                    "\t\t\t\t\t" + fusionKey + " key(" + elementKeyMembers + ");\n" +
+                    "\t\t\t\t\tif((boost::fusion::at_key< " + metaKey + " >(*this)).count(key)) return false;\n"+
+                    "\t\t\t\t\t(boost::fusion::at_key< " + metaKey + " >(*this)).insert\n" +
+                    "\t\t\t\t\t(\n" +
+                    "\t\t\t\t\t\tstd::map< " + fusionKey +", boost::reference_wrapper<paql::element::" + containedType +
+                    ">, FusionVectorComparator< " + fusionKey + " > >::value_type(key, elementToInsert)\n" +
+                    "\t\t\t\t\t);\n" +
+                    "\t\t\t\t}\n"
+                );
+                removeSections.add
+                (
+                    "\t\t\t\t{\n"+
+                    "\t\t\t\t\t" + fusionKey + " key(" + elementKeyMembers + ");\n" +
+                    "\t\t\t\t\t(boost::fusion::at_key< " + metaKey + " >(*this)).erase(key);\n"+
+                    "\t\t\t\t}\n"
+                );
+            }
+            sourceString += "\t\t>\n\t\t{\n\t\t\tpublic:\n";
+            Iterator<String> methodIterator = getMethods.iterator();
+            while(methodIterator.hasNext()){sourceString += methodIterator.next();}
+            sourceString += "\t\t\tbool insert(paql::element::" + containedType + "& element)\n\t\t\t{\n\t\t\t\t" +
+                "boost::reference_wrapper<paql::element::" + containedType + "> elementToInsert = boost::ref<paql::element::" + containedType
+                + ">(element);\n";
+            methodIterator = insertSections.iterator();
+            while(methodIterator.hasNext()){sourceString += methodIterator.next();}
+            sourceString += "\t\t\t\tthis->push_back(boost::ref(element));\n\t\t\t\treturn true;\n\t\t\t}\n";
+            sourceString += "\t\t\tvoid remove(paql::element::" + containedType + "& element)\n\t\t\t{\n";
+            methodIterator = removeSections.iterator();
+            while(methodIterator.hasNext()){sourceString += methodIterator.next();}
+            sourceString += "\t\t\t\tthis->remove_if(ContentComparator<paql::element::" + containedType + ">(boost::ref(element)));\n\t\t\t}\n";
+            sourceString += "\t\t};\n\t}\n}";
+            sourceCode.add(new SourceFile(containerClass + ".h", sourceString));
         }
     }
     public PAQLCodeGenerator()
@@ -166,7 +284,7 @@ implements CodeGenerator<PAQLSemanticStructure>
         List<SourceFile> sourceCode = new LinkedList<SourceFile>();
         makeLibraries(sourceCode);
         serializeElements(semanticStructure.elementsDataStructure, sourceCode);
-        //serializeContainers(semanticStructure.containerDataStructure, sourceCode);
+        serializeContainers(semanticStructure.containerDataStructure, semanticStructure.elementsDataStructure, sourceCode);
         //serializeQueries(semanticStructure.queryDataStructure, sourceCode);
         return sourceCode;
     }
