@@ -7,6 +7,7 @@ javac \
 	paql/test/Test.java \
 	paql/lib/Pair/Pair.java \
 	paql/lib/Triple/Triple.java \
+	paql/lib/MetaType/MetaType.java \
 	paql/lib/System/System.java \
 	paql/lib/Compiler/LexicalAnalyzer/LexicalAnalyzer.java \
 	paql/lib/Compiler/LexicalAnalyzer/OutputType/Token/Token.java \

@@ -20,17 +20,17 @@
 
 package paql.lib.Compiler.LexicalAnalyzer.OutputType.Token;
 
-public class Token<TokenClass>
+import paql.lib.MetaType.MetaType;
+
+public class Token<TokenClass> extends MetaType<TokenClass>
 {
-    protected TokenClass metaType;
     protected int lineNumber = -1;
-    public Token(TokenClass metaTypeToSet){metaType = metaTypeToSet;}
+    public Token(TokenClass metaTypeToSet){super(metaTypeToSet);}
     public Token(TokenClass metaTypeToSet, int lineNumberToSet)
     {
-        metaType = metaTypeToSet;
+        super(metaTypeToSet);
         lineNumber = lineNumberToSet;
     }
-    public TokenClass getMetaType(){return metaType;}
     public int getLineNumber(){return lineNumber;}
     public String toString(){return lineNumber + ": " + metaType.toString();}
 }

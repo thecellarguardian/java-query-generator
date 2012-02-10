@@ -20,25 +20,25 @@
 
 package paql.lib.Compiler.SyntacticAnalyzer.OutputType.ParseTree;
 
+import paql.lib.MetaType.MetaType;
+
 import java.util.*;
 
-public abstract class ParseTree<ParseTreeClass>
+public abstract class ParseTree<ParseTreeClass> extends MetaType<ParseTreeClass>
 {
-    protected ParseTreeClass parseTreeMetaType;
     protected List< ParseTree<ParseTreeClass> > childrenNodes =
         new LinkedList< ParseTree<ParseTreeClass> >();
-    public ParseTree(ParseTreeClass parseTreeMetaTypeToSet)
+    public ParseTree(ParseTreeClass metaTypeToSet)
     {
-        parseTreeMetaType = parseTreeMetaTypeToSet;
+        super(metaTypeToSet);
     }
     public void add(ParseTree<ParseTreeClass> subTree)
     {
         childrenNodes.add(subTree);
     }
-    public ParseTreeClass getMetaType(){return parseTreeMetaType;}
     public void semanticCheck(ParseTreeClass metaTypeToCheck, String where)
     {
-        if(parseTreeMetaType != metaTypeToCheck)
+        if(metaType != metaTypeToCheck)
         {
             throw new RuntimeException
             (
@@ -51,17 +51,17 @@ public abstract class ParseTree<ParseTreeClass>
                 +
                 " expected, found "
                 +
-                parseTreeMetaType
+                metaType
             );
         }
     }
     public boolean checkMetaType(ParseTreeClass metaTypeToCheck)
     {
-        return parseTreeMetaType == metaTypeToCheck;
+        return metaType == metaTypeToCheck;
     }
     public String toString(int level)
     {
-        String treeRepresentation = new String(parseTreeMetaType + "\n");
+        String treeRepresentation = new String(metaType + "\n");
         Iterator< ParseTree<ParseTreeClass> > i = childrenNodes.iterator();
         while(i.hasNext())
         {
