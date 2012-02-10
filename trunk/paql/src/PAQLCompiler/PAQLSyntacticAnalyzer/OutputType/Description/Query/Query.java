@@ -42,7 +42,7 @@ public class Query extends ParseTree<PAQLParseTreeClass>
     }
     public String toString(int level)
     {
-        String treeRepresentation = new String(parseTreeMetaType + "\n");
+        String treeRepresentation = new String(metaType + "\n");
         String[] members =
             new String[]
             {

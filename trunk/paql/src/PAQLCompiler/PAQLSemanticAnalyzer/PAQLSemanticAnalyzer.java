@@ -91,7 +91,11 @@ implements SemanticAnalyzer<PAQLParseTreeClass, PAQLSemanticStructure>
                 "Semantic error: multiple definition of " + elementType
             );
         }
-        semanticStructure.elementsDataStructure.put(elementType, new ElementInformation());
+        semanticStructure.elementsDataStructure.put
+        (
+            elementType,
+            new ElementInformation()
+        );
         if(!(parseTree.iterator()).hasNext())
         {
             throw new RuntimeException

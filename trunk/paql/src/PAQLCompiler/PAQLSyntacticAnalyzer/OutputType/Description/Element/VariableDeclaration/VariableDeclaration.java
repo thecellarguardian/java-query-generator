@@ -42,7 +42,7 @@ public class VariableDeclaration extends ParseTree<PAQLParseTreeClass>
     }
     public String toString(int level)
     {
-        String treeRepresentation = new String(parseTreeMetaType + "\n");
+        String treeRepresentation = new String(metaType + "\n");
         String[] members = new String[]{type, identifier};
         for(String s : members)
         {

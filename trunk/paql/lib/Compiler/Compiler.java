@@ -23,6 +23,7 @@ package paql.lib.Compiler;
 import paql.lib.System.System;
 import paql.lib.Compiler.LexicalAnalyzer.LexicalAnalyzer;
 import paql.lib.Compiler.SyntacticAnalyzer.SyntacticAnalyzer;
+import paql.lib.Compiler.SemanticAnalyzer.SemanticAnalyzer;
 import paql.lib.Compiler.CodeGenerator.CodeGenerator;
 import paql.lib.Compiler.CodeGenerator.OutputType.SourceFile.SourceFile;
 
@@ -31,16 +32,19 @@ class Compiler implements System< InputStream, List<SourceFile> >
 {
     private LexicalAnalyzer lexicalAnalyzer;
     private SyntacticAnalyzer syntacticAnalyzer;
+    private SemanticAnalyzer semanticAnalyzer;
     private CodeGenerator codeGenerator;
     Compiler
     (
         LexicalAnalyzer lexicalAnalyzerToSet,
         SyntacticAnalyzer syntacticAnalyzerToSet,
+        SemanticAnalyzer semanticAnalyzerToSet,
         CodeGenerator codeGeneratorToSet
     )
     {
         lexicalAnalyzer = lexicalAnalyzerToSet;
         syntacticAnalyzer = syntacticAnalyzerToSet;
+        semanticAnalyzer ? semanticAnalyzerToSet;
         codeGenerator = codeGeneratorToSet;
     }
     public List<SourceFile> transform(InputStream input)
@@ -48,11 +52,14 @@ class Compiler implements System< InputStream, List<SourceFile> >
         return
             codeGenerator.transform
             (
-                syntacticAnalyzer.transform
+                semanticAnalyzer.transform
                 (
-                    lexicalAnalyzer.transform
+                    syntacticAnalyzer.transform
                     (
-                        input
+                        lexicalAnalyzer.transform
+                        (
+                            input
+                        )
                     )
                 )
             );

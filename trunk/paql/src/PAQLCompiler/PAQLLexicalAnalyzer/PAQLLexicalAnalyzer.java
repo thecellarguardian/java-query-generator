@@ -85,10 +85,14 @@ public class PAQLLexicalAnalyzer implements LexicalAnalyzer<PAQLTokenClass>
                 case StreamTokenizer.TT_WORD:
                     {
                         PAQLTokenClass tokenType;
-                        if(streamTokenizer.sval.compareTo("element") == 0) tokenType = PAQLTokenClass.ELEMENT_KEYWORD;
-                        else if(streamTokenizer.sval.compareTo("container") == 0) tokenType = PAQLTokenClass.CONTAINER_KEYWORD;
-                        else if(streamTokenizer.sval.compareTo("query") == 0) tokenType = PAQLTokenClass.QUERY_KEYWORD;
-                        else if(streamTokenizer.sval.compareTo("key") == 0) tokenType = PAQLTokenClass.KEY_KEYWORD;
+                        if(streamTokenizer.sval.compareTo("element") == 0)
+                            tokenType = PAQLTokenClass.ELEMENT_KEYWORD;
+                        else if(streamTokenizer.sval.compareTo("container") == 0)
+                            tokenType = PAQLTokenClass.CONTAINER_KEYWORD;
+                        else if(streamTokenizer.sval.compareTo("query") == 0)
+                            tokenType = PAQLTokenClass.QUERY_KEYWORD;
+                        else if(streamTokenizer.sval.compareTo("key") == 0)
+                            tokenType = PAQLTokenClass.KEY_KEYWORD;
                         else tokenType = PAQLTokenClass.IDENTIFIER;
                         tokenList.add
                         (
