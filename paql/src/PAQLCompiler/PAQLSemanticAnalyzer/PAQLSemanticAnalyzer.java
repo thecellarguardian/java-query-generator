@@ -35,9 +35,6 @@ import paql.src.PAQLCompiler.PAQLSyntacticAnalyzer.OutputType.Description.Query.
 import paql.lib.Compiler.SemanticAnalyzer.SemanticAnalyzer;
 import paql.src.PAQLCompiler.PAQLSemanticAnalyzer.OutputType.PAQLSemanticStructure.PAQLSemanticStructure;
 import paql.src.PAQLCompiler.PAQLSemanticAnalyzer.OutputType.PAQLSemanticStructure.ElementInformation.ElementInformation;
-//import paql.src.PAQLCompiler.PAQLSemanticAnalyzer.OutputType.PAQLSemanticStructure.ElementInformation.VariableInformation.VariableInformation;
-//import paql.src.PAQLCompiler.PAQLSemanticAnalyzer.OutputType.PAQLSemanticStructure.ContainerInformation.ContainerInformation;
-//import paql.src.PAQLCompiler.PAQLSemanticAnalyzer.OutputType.PAQLSemanticStructure.QueryInformation.QueryInformation;
 
 import java.util.*;
 
@@ -208,8 +205,6 @@ implements SemanticAnalyzer<PAQLParseTreeClass, PAQLSemanticStructure>
         if
         (
             ((semanticStructure.elementsDataStructure.get(elementType)).keyInformation.get(keyIndex)).contains(variableDeclaration)
-            ||
-            (semanticStructure.elementsDataStructure.get(elementType)).variableInformation.contains(variableDeclaration)
         )
         {
             throw new RuntimeException
@@ -223,7 +218,10 @@ implements SemanticAnalyzer<PAQLParseTreeClass, PAQLSemanticStructure>
             );
         }
         ((semanticStructure.elementsDataStructure.get(elementType)).keyInformation.get(keyIndex)).add(variableDeclaration);
-        (semanticStructure.elementsDataStructure.get(elementType)).variableInformation.add(variableDeclaration);
+        if(!(semanticStructure.elementsDataStructure.get(elementType)).variableInformation.contains(variableDeclaration))
+        {
+            (semanticStructure.elementsDataStructure.get(elementType)).variableInformation.add(variableDeclaration);
+        }
     }
     @SuppressWarnings("unchecked") private void extractVariableDeclarationBlockInformation
     (

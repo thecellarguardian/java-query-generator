@@ -139,7 +139,7 @@ implements CodeGenerator<PAQLSemanticStructure>
                             " == " + currentVariable.getSecond()+ ") &&\n"
                     );
             }
-            sourceString += "\t\t\t\t\t(true);\n\t\t\t}\n\t\t};\n\t}\n\n}\n\n#endif";
+            sourceString += "\t\t\t\t\t(true);\n\t\t\t}\n\t\t};\n\t}\n}\n\n#endif";
             sourceCode.add(new SourceFile(className + ".h", sourceString));
         }
     }
@@ -164,6 +164,7 @@ implements CodeGenerator<PAQLSemanticStructure>
                     + "#include \"" + containedType + ".h\"\n"
                     + "#include \"PAQLContainerLibrary.h\"\n"
                     + "#include <string>\n"
+                    + "#include <stdexcept>\n"
                     + "using namespace std;\n\n"
                 );
             sourceString +=
@@ -215,6 +216,8 @@ implements CodeGenerator<PAQLSemanticStructure>
                     (
                         "\t\t\ttemplate<int keyIndex> paql::element::" + containedType + "& get(" + getParameters + ")\n"+
                         "\t\t\t{\n\t\t\t\t" + fusionKey + "key(" + getActualParameters + ");\n" +
+                        "\t\t\t\tif(((boost::fusion::at_key<"+ metaKey + " >(*this)).find(key)) == ((boost::fusion::at_key<"+ metaKey +
+                        " >(*this)).end())){std::runtime_error notFound(\"Element not found\"); throw notFound;};\n" +
                         "\t\t\t\treturn (boost::unwrap_reference<paql::element::" + containedType + ">::type&)"+
                         "(((boost::fusion::at_key<"+ metaKey + " >(*this)).find(key))->second);\n\t\t\t}\n"
                     )
