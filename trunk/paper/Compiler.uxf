@@ -1,0 +1,371 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="11.3">
+  <zoom_level>10</zoom_level>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>490</x>
+      <y>340</y>
+      <w>160</w>
+      <h>50</h>
+    </coordinates>
+    <panel_attributes>template=&lt;Input, Output&gt;
+/System/
+bg=green</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>190</x>
+      <y>250</y>
+      <w>360</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>template=&lt;TokenClass&gt;
+/LexicalAnalyzer/
+/&lt;InputStream, List&lt;Token&lt;TokenClass&gt; &gt; &gt;/
+bg=blue</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>400</x>
+      <y>280</y>
+      <w>134</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+    &lt;&lt;bind&gt;&gt;</panel_attributes>
+    <additional_attributes>90;70;60;30</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>100</x>
+      <y>500</y>
+      <w>430</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>template=&lt;TokenClass, ParseTreeClass&gt;
+/SyntacticAnalyzer/
+/&lt;Token&lt;TokenClass&gt;, ParseTree&lt;ParseTreeClass&gt; &gt;/
+bg=blue</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>350</x>
+      <y>360</y>
+      <w>160</w>
+      <h>170</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+ 
+ 
+ 
+&lt;&lt;bind&gt;&gt;
+</panel_attributes>
+    <additional_attributes>140;30;30;150</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>540</x>
+      <y>500</y>
+      <w>410</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>template=&lt;ParseTreeClass, SemanticStructure&gt;
+/SemanticAnalyzer/
+/&lt;ParseTree&lt;ParseTreeClass&gt;, SemanticStructure&gt;/
+bg=blue</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>600</x>
+      <y>360</y>
+      <w>150</w>
+      <h>170</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+ 
+ 
+ 
+&lt;&lt;bind&gt;&gt;
+</panel_attributes>
+    <additional_attributes>30;30;130;150</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>560</x>
+      <y>250</y>
+      <w>330</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>template=&lt;SemanticStructure&gt;
+/CodeGenerator/
+/&lt;SemanticStructure, List&lt;SourceFile&gt; &gt;/
+bg=blue</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>590</x>
+      <y>280</y>
+      <w>134</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+       &lt;&lt;bind&gt;&gt;</panel_attributes>
+    <additional_attributes>60;60;80;30</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>360</x>
+      <y>210</y>
+      <w>160</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>PAQLLexicalAnalyzer
+bg=orange</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>100</x>
+      <y>160</y>
+      <w>280</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+                     &lt;&lt;bind&gt;&gt;
+                    PAQLTokenClass</panel_attributes>
+    <additional_attributes>90;100;90;50;260;50</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>710</x>
+      <y>210</y>
+      <w>160</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>PAQLCodeGenerator
+bg=orange</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>440</x>
+      <y>160</y>
+      <w>290</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+                 &lt;&lt;bind&gt;&gt;
+             PAQLSemanticStructure</panel_attributes>
+    <additional_attributes>120;100;120;50;270;50</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>240</x>
+      <y>590</y>
+      <w>170</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>PAQLSyntacticAnalyzer
+bg=orange</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>0</x>
+      <y>540</y>
+      <w>260</w>
+      <h>108</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+               &lt;&lt;bind&gt;&gt;
+               PAQLTokenClass
+               PAQLParseTreeClass</panel_attributes>
+    <additional_attributes>100;30;100;50;240;50</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>420</x>
+      <y>540</y>
+      <w>340</w>
+      <h>108</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+                          &lt;&lt;bind&gt;&gt;
+                          PAQLParseTreeClass
+                          PAQLSemanticStructure</panel_attributes>
+    <additional_attributes>120;30;120;50;320;50</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>740</x>
+      <y>590</y>
+      <w>170</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>PAQLSemanticAnalyzer
+bg=orange</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>390</x>
+      <y>420</y>
+      <w>370</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>template=&lt;TokenClass, ParseTreeClass, SemanticStructure&gt;
+Compiler
+&lt;InputStream, List&lt;SourceFile&gt; &gt;
+bg=green</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>500</x>
+      <y>450</y>
+      <w>70</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>50;30;30;50</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>540</x>
+      <y>450</y>
+      <w>80</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>30;30;60;60</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>280</x>
+      <y>280</y>
+      <w>140</w>
+      <h>160</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>120;140;30;30</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>690</x>
+      <y>280</y>
+      <w>130</w>
+      <h>160</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>30;140;110;30</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>490</x>
+      <y>360</y>
+      <w>134</w>
+      <h>84</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+ 
+&lt;&lt;bind&gt;&gt;</panel_attributes>
+    <additional_attributes>70;30;70;60</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>70</x>
+      <y>240</y>
+      <w>144</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.
+InputStream
+bg=blue
+fg=blue</panel_attributes>
+    <additional_attributes>120;50;30;50</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>120</x>
+      <y>280</y>
+      <w>254</w>
+      <h>250</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.
+List&lt;Token&lt;TokenClass&gt; &gt;
+fg=blue</panel_attributes>
+    <additional_attributes>130;230;130;30</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>380</x>
+      <y>540</y>
+      <w>256</w>
+      <h>134</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.
+ 
+ParseTree&lt;ParseTreeClass&gt; 
+bg=blue
+fg=blue</panel_attributes>
+    <additional_attributes>190;30;190;90;70;90;70;30</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>760</x>
+      <y>280</y>
+      <w>188</w>
+      <h>250</h>
+    </coordinates>
+    <panel_attributes>lt=&gt;.
+SemanticStructure
+fg=blue</panel_attributes>
+    <additional_attributes>100;230;100;30</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>830</x>
+      <y>240</y>
+      <w>180</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.
+List&lt;SourceFile&gt; 
+bg=blue
+fg=blue</panel_attributes>
+    <additional_attributes>160;50;30;50</additional_attributes>
+  </element>
+</diagram>

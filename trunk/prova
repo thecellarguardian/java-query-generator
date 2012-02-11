@@ -1,16 +1,12 @@
-element Student
+element E
 {
-	key {int code;}
+	key {int a;}
+	key {string aa; int a;}
 	{
-		string name;
-		string surname;
-		int age;
-		string university;
-		string faculty;
-		string course;
+		string b;
 	}
 }
 
-container<Student> Class;
+container<E> C;
 
-query<Student> RetrieveAll(Class);
+query<E> Q(C);
