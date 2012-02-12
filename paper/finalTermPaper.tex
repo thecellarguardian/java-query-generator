@@ -34,6 +34,17 @@
 {
     \footnotemark[\value{#1}]
 }
+
+\lstdefinelanguage{JavaScript}{
+  keywords={typeof, new, true, false, catch, function, return, null, catch, switch, var, if, in, while, do, else, case, break},
+  ndkeywords={class, export, boolean, throw, implements, import, this},
+  sensitive=false,
+  comment=[l]{//},
+  morecomment=[s]{/*}{*/},
+  morestring=[b]',
+  morestring=[b]"
+}
+
 \begin{document}
 \title{Advanced Programming\\final term paper}   % type title between braces
 \author{Cosimo Sacco}         % type author(s) between braces
@@ -47,12 +58,13 @@
     a \emph{PAQL description} into a suitable set of \emph{C++} classes simulating the \emph{LINQ C\# mechanism}.
 \end{abstract}
 \section{PAQL basic grammar}
+    \label{sec:basicPAQL}
     \emph{PAQL} basic grammar $G_{PAQL}$:
     \vspace{1em}
     \begin{mdframed}
         \begin{grammar}
             <description> ::=
-                <element> <description> \alt <container> <description> \alt <query> <description> \alt $\varepsilon$
+                <element> <description> | <container> <description> \alt <query> <description> | $\varepsilon$
 
             <element> ::=
                 `element' <identifier> `{' <declarationBlock> `}'
@@ -77,14 +89,14 @@
         \end{grammar}
     \end{mdframed}
     \vspace{1em}
-    This grammar allows \emph{multiple superkeys with variable arity}. The related parsing table $P$ follows
+    \emph{PAQL} parsing table:
     \begin{center}
     \begin{tabular}{ | c | c | c | c | c | c | c | c | c |}
         \hline
                            & $\mathbf\varepsilon$ & \textbf{identifier} & \textbf{query} & \textbf{container} & \textbf{\}} & \textbf{\{} & \textbf{key} & \textbf{element} \\
         \hline
 \textbf{$\langle$description$\rangle$}& $a_3$ & & $a_2$              & $a_1$         &                &             &             & $a_0$\\
-        \hline
+       \hline
 \textbf{$\langle$element$\rangle$} & &                    &                &                    &             &             &              & $b$\\
         \hline
 \textbf{$\langle$declarationBlock$\rangle$} & &                 &                &                    &            &  $c_1$       &  $c_0$    &\\
@@ -103,7 +115,7 @@
     \end{center}
     Let $c_{i,j}$ be the cell of $P$ in the position $(i, j)$. Then
     \[
-    \#(c_{i,j}) \in \left\{ 0, 1 \right\}\ \forall i,j : c_{i,j} \in P \implies G_{PAQL}\sim LL(1).
+        \#(c_{i,j}) \in \left\{ 0, 1 \right\}\ \forall i,j : c_{i,j} \in P \implies G_{PAQL}\sim LL(1).
     \]
 \section{Generated classes}
     \subsection{Element model class}
@@ -117,28 +129,32 @@ bool operator==(const Element& e) const
         Where $v_i$ represents the $i$-th declared variable.
     \subsection{Container model class}
         This \emph{PAQL} implementation allows \emph{multiple superkeys with variable arity and composing types}.
-        Each key is defined by a tuple of types. An example:
+        Each key is defined by a tuple of types. Also, different keys can be defined through the same \emph{type tuple}. An example:
         \begin{lstlisting}[language=C++]
-key {int anagraphicCode; string name;}
-key {int code; string nation;}
-key {Genoma personalSequence;}
+key {int personalCode; string nation;}
+key {int studentCode; string university;}
+key {string username; string password;}
         \end{lstlisting}
-        In the example, different keys have the same type tuple.
 
         In order to provide an efficient container lookup, a \emph{map} should be provided
         for each defined key, and a proper \emph{get} method which uses the right map to find the result.
         The main problems to face in this case are three:
         \begin{enumerate}
-            \item The \emph{``key type''} is a type tuple. How can a tuple of hetherogeneous types be managed?
-            \item The generated methods \texttt{Element\& get(int anagrCode, string name)} and \texttt{Element\& get(int code, string nation)}
-                would have the same signature. How can two key types whose type tuple is the same be distinguished?
-            \item The \texttt{Element\& get(int anagrCode, string name)} and \texttt{Element\& get(int code, string nation)} methods should
+            \item The \emph{key type} is a type tuple. How can a tuple of hetherogeneous types be managed?
+            \item The generated methods \texttt{Element\& get(int personalCode, string nation)} and
+            \texttt{Element\& get(int studentCode, string university)}
+                would have the same signature, which is illegal. How can two key types whose type tuple is the same be distinguished?
+            \item The \texttt{Element\& get(int personalCode, string nation)} and
+            \texttt{Element\& get(int studentCode, string university)} methods should
             lookup on two different maps. How can a key type be linked to the proper map?
         \end{enumerate}
-
         Those problems are addressed through \emph{template metaprogramming} techniques.
-        A container is implemented as the \emph{fusion} of a \emph{generic list} and a \emph{meta map}\footnote{
-        A \emph{meta map} is a map where the keys are types, and access is resolved at compile time.} through \emph{multiple virtual inheritance}
+
+        A container is implemented as the \emph{fusion} of a \emph{generic list} and a \emph{meta map\footnote{
+        A \emph{meta map} is a map where the keys are types, and access is resolved at compile time.} of heterogeneous maps\footnote{We could refer
+        to this structure as a $\mu\varepsilon\tau\alpha$ \emph{meta} \emph{map}, where $\mu\varepsilon\tau\alpha$ is referred to the fact that the map values are also maps, while \emph{meta} is referred to the fact that
+        those values are accessed at compile time.}}
+        through \emph{multiple virtual inheritance}
         from those structures\footnote{Implemented by \texttt{std::list} and \texttt{boost::fusion::map} respectively.}.
         The \emph{``list nature''} of the container allows general element access, while its \emph{``meta map nature''}
         conveys to fast access. Figure \ref{fig:containerUML} shows the type relations involved in each container class.
@@ -147,7 +163,8 @@ key {Genoma personalSequence;}
             \includegraphics[scale=0.5]{Container.pdf}
             \caption{The container type genesis}\label{fig:containerUML}
         \end{figure}
-        A \texttt{Container} is a list of references\footnote{\texttt{boost::reference_wrapper} allows to pass references as template parameters.} to elements and a \emph{set of maps} which index the contained elements
+        A \texttt{Container} is a \emph{list of references}\footnote{\texttt{boost::reference_wrapper} allows to pass references as template
+        parameters.} to elements and a \emph{set of maps} which index the contained references
         according to each key definition. Each map is identified by its \emph{meta key}, which is a type, and is
         retrieved at compile time through the \emph{meta selection operator} \texttt{boost::fusion::at_key<keyType>}.
         The \emph{meta keys} are composed by the \emph{key type}, which is a \emph{type tuple} composed through the \emph{variadic
@@ -196,10 +213,24 @@ std::list<boost::reference_wrapper<paql::element::Element> > execute()
     the systems of concrete classes \texttt{PAQLLexicalAnalyzer}, \texttt{PAQLSyntacticAnalyzer}, \texttt{PAQLSemanticAnalyzer} and
     \texttt{PAQLCodeGenerator}. Figure \ref{fig:compiler} shows the class hierarchy and relations.
     \begin{figure}[htbp]
-    \hspace{-4em}
+    \hspace{-7em}
         \includegraphics[scale=0.45]{Compiler.pdf}
         \caption{The \emph{PAQL} compiler classes}\label{fig:compiler}
     \end{figure}
+    In particular, \texttt{PAQLSyntacticAnalyzer} is implemented as a \emph{recursive descent parser}, which offers a parse method
+    for each syntactic cathegory:
+    \begin{lstlisting}[language=Java]
+// "typedef" ParseTree<PAQLParseTreeClass> PT;
+// "typedef" Iterator< Token<PAQLTokenClass> > TI
+private PT parseDescription(TI tokenIterator);
+private PT parseElement(TI tokenIterator);
+private PT parseDeclarationBlock(TI tokenIterator);
+private PT parseKeyDeclaration(TI tokenIterator);
+private PT parseVariableDeclarationBlock(TI tokenIterator);
+private PT parseVariableDeclaration(TI tokenIterator);
+private PT parseContainer(TI tokenIterator);
+private PT parseQuery(TI tokenIterator);
+        \end{lstlisting}
     \emph{Tokens}, \emph{parse trees}, \emph{semantic structures} and \emph{source files} are represented by dedicated classes.
     Figure \ref{fig:tokenandparsetree} shows the class hierarchy of tokens and parse trees. In particular, both \texttt{Token}
     and \texttt{ParseTree} are \texttt{MetaType}s. The \texttt{MetaType} interface allows to explicitly refer the \emph{intended}
@@ -218,18 +249,99 @@ std::list<boost::reference_wrapper<paql::element::Element> > execute()
     The \emph{semantic structure} produced by a particular \texttt{CodeGenerator} is application specific. In the case of \emph{PAQL},
     this structure is described in figure \ref{fig:semanticStructure}.
     The \texttt{PAQLSemanticStructure} maintains informations about each declared \emph{element}, \emph{container} or \emph{query}.
-    The formal properties of the \texttt{Set} and \texttt{Map} containers are used to guarantee the semantic consistency of declarations\footnote
-    {In fact, each element in a set is guaranteed to be unique, as each key in a map keyset. This unicity can be exploited to enforce declaration consistency.}.
+    The formal properties of the \texttt{Set} (\emph{value uniqueness}) and \texttt{Map} (\emph{key-value uniqueness}) containers
+    are exploited to enforce semantic consistency of declarations.
     The element informations are indexed in a map, whose key type is the declared element name.
     For each element, its variable set and keyset is maintained. In particular, the keyset is maintained in the form of a map indexed by the key index.
     The informations related to containers and queries are simpler, those are, respectively, \texttt{Pair} and \texttt{Triple} of type names.
 
-    \texttt{SourceFile} is a simple strings wrapper with serialization capabilities.
+    \texttt{SourceFile} is a simple string wrapper with serialization capabilities.
     \begin{figure}[htbp]
         \centering
         \includegraphics[scale=0.45]{semanticStructure.pdf}
         \caption{The \emph{PAQL semantic structure}}\label{fig:semanticStructure}
     \end{figure}
+\section{Conditional queries}
+    The \emph{PAQL} grammar can be extended to allow \emph{conditional queries}, id est queries where the result is filtered by a condition
+    on elements. The $\langle$\emph{query}$\rangle$ production is modified as follows:
+    \vspace{1em}
+    \begin{mdframed}
+        \begin{grammar}
+            <query> := `query' `<' <identifier> `>' <identifier> `(' <identifier> <clause> `)' `;'
+
+            <clause> := `key' <intConst> `{' <keyCondition> `}' <binaryExpression> | <binaryExpression>
+
+            <binaryExpression> := <term> <binaryExpression'>
+
+            <binaryExpression'> := `or' <term> <binaryExpression'> | $\varepsilon$
+
+            <term> := <factor> <term'>
+
+            <term'> := `and' <factor> <term'> | $\varepsilon$
+
+            <factor> := `not' <factor> | `(' <binaryExpression> `)' \alt <identifier> <comparation> | <boolConst> | $\varepsilon$
+
+            <keyCondition> := <identifier> <comparation> `;' <keyCondition> | $\varepsilon$
+
+            <comparation> := <equals> | <differs> | <greater> | <greaterOrEqual> | <less> | <lessOrEqual>
+
+            <equals> := `==' <comparisonTerm>
+
+            <differs> := `~=' <comparisonTerm>
+
+            <greater> := `>' <comparisonTerm>
+
+            <greaterOrEqual> := `>=' <comparisonTerm>
+
+            <less> := `<' <comparisonTerm>
+
+            <lessOrEqual> := `<=' <comparisonTerm>
+
+            <comparisonTerm> := <identifier> | <intConst> | <doubleConst> | <boolConst> | <charConst> | <stringConst>
+        \end{grammar}
+    \end{mdframed}
+    \vspace{1em}
+    $G_{PAQL}$ remains a \emph{context-free} $LL(1)$ grammar.
+\section{Ordered result set queries}
+    A further extension to \emph{PAQL} is to allow query result set ordering. The $\langle$\emph{query}$\rangle$ production is modified as follows:
+    \vspace{1em}
+    \begin{mdframed}
+        \begin{grammar}
+            <query> := `query' `<' <identifier> `>' <identifier> `(' <identifier> <clause> `)' <ordering> `;'
+
+            <ordering> := `order' <identifier> | $\varepsilon$
+        \end{grammar}
+    \end{mdframed}
+    \vspace{1em}
+\section{Exercise 7}
+    \subsection{Explain the unification of arrays and objects in JavaScript}
+    In JavaScript every object is an associative array, while an \texttt{Array} is a particular \emph{prototype}
+    which offers a suitable array interface (\texttt{length}, \texttt{push(object)}, \ldots).
+    The following statements are all valid JavaScript:
+    \begin{lstlisting}[language=JavaScript]
+        var a = new Object();
+        a["method1"] = function(){...};
+        a.method1();
+        a[2] = 5;
+        a[2]; // 5
+        a.length; // 0, a is not an Array!
+        a = new Array();
+        a[2] = 5;
+        a.length, // 3
+        a[0] = "heterogeneous array types allowed";
+    \end{lstlisting}
+    \subsection{What is the difference between a prototype in JavaScript and a class in other languages?}
+    The modeling of \emph{equivalence classes} is possible both with class based languages and with prototype based ones.
+
+    Class based languages allow \emph{static type checking}, being the class a known description at \emph{compile time}.
+    This enables the compiler to check \emph{type coherence}, thus relieving the programmer from explicit type checking.
+    The class defines once for all an object state and behaviour.
+
+    In a prototype based language, an object is created \emph{by cloning  a prototype}. Prototypes are more concrete
+    than classes because they are examples of objects rather than descriptions of format and initialization.
+    In this frame, \emph{new data and behaviour} can be added \emph{at run time} by copy, thus allowing highly dynamical interactions.
+
+
 %\begin{thebibliography}{9}
   % type bibliography here
 %\end{thebibliography}

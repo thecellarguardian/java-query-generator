@@ -6,7 +6,7 @@ VARDECBLOCK -> VARIABLE VARDECBLOCK | .
 VARIABLE -> typeid varid semicolon.
 CONTAINER -> container labrace elemid rabrace contid semicolon.
 QUERY -> query labrace elemid rabrace queryid lpar contid WHERE rpar semicolon.
-WHERE -> key keyid lcb COMPLIST rcb BEXPR | BEXPR.
+WHERE -> key keyid lcbrace COMPLIST rcbrace BEXPR | BEXPR.
 BEXPR -> BTERM BEXPRP.
 BEXPRP -> or BTERM BEXPRP | .
 BTERM -> BFACTOR BTERMP.
