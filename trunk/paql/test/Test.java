@@ -24,7 +24,7 @@ public class Test
         FileInputStream file;
         try
         {
-            file = new FileInputStream("prova");
+            file = new FileInputStream("descriptionTest.paql");
         }
         catch(FileNotFoundException exception)
         {

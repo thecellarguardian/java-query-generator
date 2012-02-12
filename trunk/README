@@ -1,0 +1,2 @@
+To make the PAQL compiler: run the make.sh script
+To try the PAQL compiler: run the test.sh script
