@@ -1,3 +1,5 @@
+\RequirePackage{etex}
+\RequirePackage{easybmat}
 \documentclass[10pt]{article}  % list options between brackets
 \usepackage{etex}
 %\usepackage[english]{babel} % Adatta LaTeX alle convenzioni tipografiche italiane
@@ -180,16 +182,28 @@ key {string username; string password;}
             \item \textbf{removal}: given an element reference, the \emph{remove} to delete each entry
             related to that element in each map, and remove it from the list;
         \end{itemize}
-        An example of a container class can be found in \texttt{paql/test/paqlClasses/ContainerExample}.
     \subsection{Query model class}
         In the first, basic version of \emph{PAQL}, the generated query classes are very simple. The query execution
         method simply retrieves all the elements from its container instance \texttt{c} and returns the formed list.
         \begin{lstlisting}[language=C++]
 std::list<boost::reference_wrapper<paql::element::Element> > execute()
 {
-    typedef std::list<boost::reference_wrapper<paql::element::Element> > List;
+    typedef
+        std::list
+        <
+            boost::reference_wrapper
+            <
+                paql::element::Element
+            >
+        >
+        List;
     List r;
-    for(List::iterator i = c.begin(); i != c.end(); i++) r.push_back((*i));
+    for
+    (
+        List::iterator i = c.begin();
+        i != c.end();
+        i++
+    ) r.push_back((*i));
     return r;
 }
         \end{lstlisting}
@@ -262,6 +276,11 @@ private PT parseQuery(TI tokenIterator);
         \caption{The \emph{PAQL semantic structure}}\label{fig:semanticStructure}
     \end{figure}
 \section{Conditional queries}
+
+    \begin{center}
+        \textbf{\emph{Due to lack of time, this extension has not been implemented}}
+    \end{center}
+
     The \emph{PAQL} grammar can be extended to allow \emph{conditional queries}, id est queries where the result is filtered by a condition
     on elements. The $\langle$\emph{query}$\rangle$ production is modified as follows:
     \vspace{1em}
@@ -303,6 +322,11 @@ private PT parseQuery(TI tokenIterator);
     \vspace{1em}
     $G_{PAQL}$ remains a \emph{context-free} $LL(1)$ grammar.
 \section{Ordered result set queries}
+
+    \begin{center}
+        \textbf{\emph{Due to lack of time, this extension has not been implemented}}
+    \end{center}
+
     A further extension to \emph{PAQL} is to allow query result set ordering. The $\langle$\emph{query}$\rangle$ production is modified as follows:
     \vspace{1em}
     \begin{mdframed}
