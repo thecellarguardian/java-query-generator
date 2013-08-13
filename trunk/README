@@ -1,2 +1,5 @@
-To make the PAQL compiler: run the make.sh script
-To try the PAQL compiler: run the test.sh script
+To make the PAQL compiler: run the makeCompiler.sh script
+To try the PAQL compiler: run the testCompiler.sh script
+To make and run the PAQL test: run the makeTest.sh script and then ./generatedClassesTest
+All in one: ./allInOne.sh
+
